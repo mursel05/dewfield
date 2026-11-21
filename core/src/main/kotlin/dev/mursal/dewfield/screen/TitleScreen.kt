@@ -173,7 +173,7 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
     }
 
     companion object {
-        const val VERSION = "0.2.0"
+        const val VERSION = "0.3.0"
         private const val LOGO_TOP = 150f
         // .github/scripts/smoke-test.sh taps "New farm" 230 units above the bottom edge: keep it in step.
         private const val FOOT_BOTTOM = 56f
