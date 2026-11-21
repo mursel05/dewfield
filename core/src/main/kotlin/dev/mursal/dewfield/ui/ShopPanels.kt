@@ -2,6 +2,7 @@ package dev.mursal.dewfield.ui
 
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import dev.mursal.dewfield.model.Category
 import dev.mursal.dewfield.model.Housing
 import dev.mursal.dewfield.model.ItemDb
@@ -49,7 +50,7 @@ class SeedShopPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("shop.seeds.title"), 
                 refreshKeep()
             }).growX().padBottom(8f).row()
         }
-        ld.build(body, list, detail())
+        ld.build(body, list, detail(), DETAIL_BUY)
     }
 
     private fun detail(): Table {
@@ -115,7 +116,7 @@ class FeedShopPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("shop.feed.title"), "
                     refreshKeep()
                 }).growX().padBottom(8f).row()
             }
-            ld.build(inner, list, feedDetail())
+            ld.build(inner, list, feedDetail(), DETAIL_FEED)
         } else {
             for (def in ItemDb.animals.values) {
                 val locked = !farm.isUnlocked(def.id)
@@ -126,7 +127,7 @@ class FeedShopPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("shop.feed.title"), "
                     refreshKeep()
                 }).growX().padBottom(8f).row()
             }
-            ld.build(inner, list, animalDetail())
+            ld.build(inner, list, animalDetail(), DETAIL_FEED)
         }
         wrap.add(inner).grow()
         body.add(wrap).grow()
@@ -204,7 +205,7 @@ class SellPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("shop.sell.title"), "coin
         val wrap = Table()
         val inner = Table()
         if (keys.isEmpty()) {
-            inner.add(ui.label(ui.t("shop.nothing_to_sell"), ui.head, wrap = true)).width(600f)
+            inner.add(ui.label(ui.t("shop.nothing_to_sell"), ui.head, wrap = true, align = Align.center)).growX().pad(20f)
             wrap.add(inner).grow()
             body.add(wrap).grow()
             return
@@ -224,10 +225,10 @@ class SellPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("shop.sell.title"), "coin
                 add(ui.icon("arrow_up", 28f)).size(28f).padTop(-14f).padRight(-14f)
             })
             card.add(cell).size(64f)
-            grid.add(card).size(100f).pad(4f)
-            if (i % 5 == 4) grid.row()
+            grid.add(card).size(GRID_CELL).pad(4f)
+            if (i % GRID_COLUMNS == GRID_COLUMNS - 1) grid.row()
         }
-        ld.build(inner, grid, detail(), 560f)
+        ld.build(inner, grid, detail(), DETAIL_SELL)
         wrap.add(inner).grow()
         body.add(wrap).grow()
     }
@@ -276,10 +277,9 @@ class SellPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("shop.sell.title"), "coin
 
 // ---------------------------------------------------------------------- Tural: upgrades and machines
 
-class WorkshopPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("shop.workshop.title"), "hoe", showMoney = true) {
+class WorkshopPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("shop.workshop.title"), "hoe", prefH = Modal.FIT, showMoney = true) {
     override fun fill(body: Table) {
         val grid = Table()
-        var i = 0
         for (def in ItemDb.upgrades.values) {
             val lv = farm.upgradeLevel(def.id)
             val now = def.levels[lv - 1].value
@@ -292,8 +292,7 @@ class WorkshopPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("shop.workshop.title"), "
             mid.add(ui.label(line, ui.small, wrap = true)).growX().left()
             card.add(mid).growX()
             card.add(action(next?.price, next?.unlockLevel, owned = next == null) { ctx.report(farm.buyUpgrade(def.id), "levelup") }).width(190f).height(64f)
-            grid.add(card).growX().uniformX().minHeight(110f).pad(6f)
-            if (++i % 2 == 0) grid.row()
+            grid.add(card).growX().minHeight(110f).padBottom(10f).row()
         }
         for (def in ItemDb.machines.values.filter { it.price > 0 }) {
             val card = Table().apply { background = ui.inset; pad(12f) }
@@ -303,8 +302,7 @@ class WorkshopPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("shop.workshop.title"), "
             mid.add(ui.label(ui.t("machine.${def.id}.about"), ui.small, wrap = true)).growX().left()
             card.add(mid).growX()
             card.add(action(def.price, def.unlockLevel, farm.owns(def.id)) { ctx.report(farm.buyMachine(def.id), "levelup") }).width(190f).height(64f)
-            grid.add(card).growX().uniformX().minHeight(110f).pad(6f)
-            if (++i % 2 == 0) grid.row()
+            grid.add(card).growX().minHeight(110f).padBottom(10f).row()
         }
         body.add(ui.scroll(grid)).grow()
     }
@@ -325,6 +323,16 @@ class WorkshopPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("shop.workshop.title"), "
         return t
     }
 }
+
+/** Heights of the detail panes under the lists: tall enough for the info lines and the buttons. */
+internal const val DETAIL_BUY = 500f
+internal const val DETAIL_FEED = 470f
+internal const val DETAIL_SELL = 520f
+internal const val DETAIL_BAG = 430f
+
+/** Item grids (sell, bag): six cells across the portrait panel. */
+internal const val GRID_COLUMNS = 6
+internal const val GRID_CELL = 94f
 
 /** Category order used by the bag. */
 internal val CATEGORY_ORDER = listOf(Category.SEED, Category.SUPPLY, Category.FEED, Category.CROP, Category.ANIMAL_PRODUCT, Category.ARTISAN, Category.MEAL)

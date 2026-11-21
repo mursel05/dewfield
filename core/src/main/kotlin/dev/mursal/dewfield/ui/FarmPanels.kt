@@ -10,16 +10,17 @@ import dev.mursal.dewfield.model.ItemKey
 
 // ---------------------------------------------------------------------- orders board
 
-class OrdersPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("orders.title"), "orders", showMoney = true) {
+class OrdersPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("orders.title"), "orders", prefH = Modal.FIT, showMoney = true) {
     override fun fill(body: Table) {
         val orders = farm.state.orders
         if (orders.isEmpty()) {
-            body.add(ui.label(ui.t("orders.none"), ui.head, wrap = true, align = Align.center)).width(700f)
+            body.add(ui.label(ui.t("orders.none"), ui.head, wrap = true, align = Align.center)).growX().pad(20f)
             return
         }
-        val row = Table()
+        // One full-width card per order, stacked: the client, what they want, then reward and Deliver.
+        val list = Table().apply { top() }
         for (o in orders) {
-            val card = Table().apply { background = ui.inset; pad(16f); top() }
+            val card = Table().apply { background = ui.inset; pad(16f) }
             card.add(Table().apply {
                 add(ui.icon("orders", 44f)).size(44f).padRight(10f)
                 add(Table().apply {
@@ -27,7 +28,7 @@ class OrdersPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("orders.title"), "orders", 
                     add(ui.label(ui.t("client.${o.client}"), ui.head)).left().row()
                     add(ui.label(ui.f("orders.days_left", o.daysLeft), ui.soft).also { if (o.daysLeft <= 1) it.color = Ui.BAD }).left()
                 }).left().growX()
-            }).growX().padBottom(12f).row()
+            }).growX().padBottom(10f).row()
             for (line in o.lines) {
                 val have = farm.countAll(line.item)
                 card.add(Table().apply {
@@ -36,19 +37,18 @@ class OrdersPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("orders.title"), "orders", 
                     add(ui.label("${minOf(have, line.qty)}/${line.qty}", ui.head).also { it.color = if (have >= line.qty) Ui.GOOD else Ui.BAD })
                 }).growX().padBottom(8f).row()
             }
-            card.add().expandY().row()
             card.add(Table().apply {
                 add(ui.coins(o.reward)).padRight(16f)
                 add(ui.icon("xp", 30f)).size(30f).padRight(4f)
-                add(ui.label("+${o.xp}", ui.head))
-            }).padBottom(10f).row()
-            card.add(ui.button(ui.t("orders.deliver"), "green", "check") {
-                ctx.report(farm.deliver(o.id), "levelup")
-                rebuild()
-            }.apply { isDisabled = !farm.canDeliver(o) }).growX().height(66f)
-            row.add(card).width(320f).growY().pad(6f)
+                add(ui.label("+${o.xp}", ui.head)).left().expandX()
+                add(ui.button(ui.t("orders.deliver"), "green", "check") {
+                    ctx.report(farm.deliver(o.id), "levelup")
+                    rebuild()
+                }.apply { isDisabled = !farm.canDeliver(o) }).width(250f).height(66f)
+            }).growX().padTop(4f)
+            list.add(card).growX().padBottom(12f).row()
         }
-        body.add(row).grow().row()
+        body.add(ui.scroll(list)).grow().row()
         body.add(ui.label(ui.t("orders.tip"), ui.soft, wrap = true, align = Align.center)).growX().padTop(8f)
     }
 }
@@ -56,13 +56,13 @@ class OrdersPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("orders.title"), "orders", 
 // ---------------------------------------------------------------------- machines (mill, press, loom)
 
 class MachinePanel(ctx: GameUi, private val machineId: String) :
-    Modal(ctx, ctx.ui.t("machine.$machineId"), "machine_$machineId") {
+    Modal(ctx, ctx.ui.t("machine.$machineId"), "machine_$machineId", prefH = Modal.FIT) {
 
     override fun fill(body: Table) {
         val def = ItemDb.machine(machineId)
         val state = farm.machine(machineId) ?: return
-        val left = Table().apply { top() }
-        left.add(ui.label(ui.t("machine.recipes"), ui.head)).left().padBottom(8f).row()
+        val recipes = Table().apply { top() }
+        recipes.add(ui.label(ui.t("machine.recipes"), ui.head)).left().padBottom(8f).row()
         for (r in ItemDb.recipesFor(machineId)) {
             val have = farm.countAll(r.input)
             val card = Table().apply { background = ui.inset; pad(12f) }
@@ -90,42 +90,47 @@ class MachinePanel(ctx: GameUi, private val machineId: String) :
                 rebuild()
             }.apply { isDisabled = have <= 0 || free <= 0 }).size(112f, 52f)
             card.add(buttons)
-            left.add(card).growX().padBottom(10f).row()
+            recipes.add(card).growX().padBottom(10f).row()
         }
 
-        val right = ui.detailPane()
-        right.add(ui.label(ui.f("machine.slots", state.queue.size, def.slots), ui.head)).left().padBottom(8f).row()
+        // What is in the machine sits below the recipes, with Collect where the thumb rests.
+        val status = ui.detailPane()
+        status.add(ui.label(ui.f("machine.slots", state.queue.size, def.slots), ui.head)).left().padBottom(8f).row()
         val slots = Table()
         for (i in 0 until def.slots) {
             val cell = Table().apply { background = ui.slot }
             state.queue.getOrNull(i)?.let { job -> cell.add(ui.item(ItemKey.of(ItemDb.recipe(job.recipe).input, job.quality), 44f)).size(44f) }
             slots.add(cell).size(60f).pad(3f)
-            if (i % 5 == 4) slots.row()
+            if (i % SLOTS_PER_ROW == SLOTS_PER_ROW - 1) slots.row()
         }
-        right.add(slots).left().padBottom(8f).row()
-        right.add(ui.label(ui.t(if (state.queue.isEmpty()) "machine.idle" else "machine.ready_tomorrow"), ui.soft, wrap = true)).growX().padBottom(14f).row()
-        right.add(ui.label(ui.t("machine.ready"), ui.head)).left().padBottom(6f).row()
+        status.add(slots).left().padBottom(8f).row()
+        status.add(ui.label(ui.t(if (state.queue.isEmpty()) "machine.idle" else "machine.ready_tomorrow"), ui.soft, wrap = true)).growX().padBottom(12f).row()
+        status.add(ui.label(ui.t("machine.ready"), ui.head)).left().padBottom(6f).row()
         val ready = Table()
         state.ready.entries.forEachIndexed { i, (k, n) ->
             ready.add(ui.item(k, 56f, n)).size(56f).pad(4f)
-            if (i % 4 == 3) ready.row()
+            if (i % READY_PER_ROW == READY_PER_ROW - 1) ready.row()
         }
         if (state.ready.isEmpty()) ready.add(ui.label(ui.t("machine.nothing_ready"), ui.soft))
-        right.add(ready).left().row()
-        right.add().expandY().row()
-        right.add(ui.button(ui.t("machine.collect"), "green", "basket") {
+        status.add(ready).left().row()
+        status.add(ui.button(ui.t("machine.collect"), "green", "basket") {
             ctx.report(farm.collectMachine(machineId), "harvest")
             rebuild()
-        }.apply { isDisabled = state.ready.isEmpty() }).growX().height(66f)
+        }.apply { isDisabled = state.ready.isEmpty() }).growX().height(66f).padTop(14f)
 
-        body.add(ui.scroll(left)).width(600f).growY().top()
-        body.add(right).grow().padLeft(14f)
+        body.add(ui.scroll(recipes)).grow().row()
+        body.add(status).growX().padTop(12f)
+    }
+
+    private companion object {
+        const val SLOTS_PER_ROW = 5
+        const val READY_PER_ROW = 8
     }
 }
 
 // ---------------------------------------------------------------------- stove
 
-class CookPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("cook.title"), "fried_egg") {
+class CookPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("cook.title"), "fried_egg", prefH = Modal.FIT) {
     override fun fill(body: Table) {
         body.add(Table().apply {
             add(ui.icon("energy", 36f)).size(36f).padRight(8f)
@@ -133,7 +138,7 @@ class CookPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("cook.title"), "fried_egg") {
             add(ui.label("${farm.state.energy}/${Farm.MAX_ENERGY}", ui.head))
         }).left().padBottom(10f).row()
         val grid = Table()
-        ItemDb.meals.values.forEachIndexed { i, meal ->
+        for (meal in ItemDb.meals.values) {
             val card = Table().apply { background = ui.inset; pad(12f) }
             card.add(ui.item(meal.id, 72f, farm.count(meal.id).takeIf { it > 0 })).size(72f).padRight(10f)
             val mid = Table().apply { left() }
@@ -160,8 +165,7 @@ class CookPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("cook.title"), "fried_egg") {
                 rebuild()
             }.apply { isDisabled = farm.state.energy >= Farm.MAX_ENERGY }).width(150f).height(56f).padTop(6f)
             card.add(buttons)
-            grid.add(card).growX().pad(6f)
-            if (i % 2 == 1) grid.row()
+            grid.add(card).growX().padBottom(10f).row()
         }
         body.add(ui.scroll(grid)).grow()
     }
@@ -199,10 +203,10 @@ class BagPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("bag.title"), "bag") {
         keys.forEachIndexed { i, key ->
             val card = ui.card(key == selected) { selected = key; refreshKeep() }
             card.add(ui.item(key, 60f, farm.count(key))).size(60f)
-            grid.add(card).size(92f).pad(4f)
-            if (i % 6 == 5) grid.row()
+            grid.add(card).size(GRID_CELL).pad(4f)
+            if (i % GRID_COLUMNS == GRID_COLUMNS - 1) grid.row()
         }
-        ld.build(inner, grid, itemDetail(), 600f)
+        ld.build(inner, grid, itemDetail(), DETAIL_BAG)
     }
 
     private fun itemDetail(): Table {
@@ -274,6 +278,6 @@ class BagPanel(ctx: GameUi) : ListModal(ctx, ctx.ui.t("bag.title"), "bag") {
         for (k in listOf("bag.care_feed", "bag.care_pet", "bag.care_mood")) lines.line(ui.info("heart", ui.t(k), ui.small))
         for (t in ItemDb.troughs.values) lines.line(ui.info(if (t.feed == "clover") "clover" else t.feed, ui.f("bag.trough_line", ui.t("trough.${t.id}"), farm.trough(t.id), t.capacity), ui.small))
         tips.add(ui.scroll(lines)).grow()
-        ld.build(inner, list, tips, 640f)
+        ld.build(inner, list, tips, 360f)
     }
 }

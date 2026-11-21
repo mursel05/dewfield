@@ -1,9 +1,12 @@
 package dev.mursal.dewfield.ui
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -25,10 +28,14 @@ import dev.mursal.dewfield.model.Msg
 
 /**
  * The game's widget kit on top of scene2d: soft cream panels, chunky buttons with a lip,
- * item icons with quality stars and counts. All sizes are in the 1280x720 virtual UI.
+ * item icons with quality stars and counts. All sizes are in the portrait virtual UI of
+ * [WIDTH] x [HEIGHT] units, which an `ExtendViewport` stretches to taller or wider screens.
  */
 class Ui(val assets: Assets, private val stringsRef: () -> Strings, val audio: Audio) {
     val strings: Strings get() = stringsRef()
+
+    /** Screen edges covered by camera holes and notches, in stage units. */
+    val safe = SafeArea()
 
     fun t(key: String): String = strings[key]
     fun f(key: String, vararg args: Any): String = strings.format(key, *args)
@@ -189,6 +196,15 @@ class Ui(val assets: Assets, private val stringsRef: () -> Strings, val audio: A
         setCancelTouchFocus(true)
     }
 
+    /** A sideways-scrolling strip (the seed bar) with no visible scroll bar. */
+    fun scrollX(content: Actor): ScrollPane = ScrollPane(content, ScrollPane.ScrollPaneStyle()).apply {
+        setScrollingDisabled(false, true)
+        setOverscroll(true, false)
+        setFlickScroll(true)
+        setCancelTouchFocus(true)
+        setScrollbarsVisible(false)
+    }
+
     /** A coin amount: icon plus number. */
     fun coins(amount: Int, style: Label.LabelStyle = head): Table = Table().apply {
         add(icon("coin", 30f)).size(30f).padRight(6f)
@@ -202,6 +218,13 @@ class Ui(val assets: Assets, private val stringsRef: () -> Strings, val audio: A
     ).apply { setSize(width, height) }
 
     companion object {
+        /** Virtual UI size: portrait, 9:16. Taller phones get more height, tablets more width. */
+        const val WIDTH = 720f
+        const val HEIGHT = 1280f
+
+        /** Gap between the screen edge and HUD widgets. */
+        const val MARGIN = 16f
+
         val INK: Color = Color.valueOf("5a4430")
         val INK_SOFT: Color = Color.valueOf("8a7258")
         val GOOD: Color = Color.valueOf("3f8a2e")
@@ -210,6 +233,54 @@ class Ui(val assets: Assets, private val stringsRef: () -> Strings, val audio: A
 
         /** Icons drawn as plain white shapes, meant to be tinted. */
         val GLYPHS = setOf("check", "close", "plus", "minus", "play", "queue", "zzz")
+    }
+}
+
+/**
+ * A one-line label that may be squeezed: it shrinks its font down to [minScale] to fit the width
+ * its cell gives it, and only then ends in an ellipsis. Used for panel titles, which carry names
+ * and grow longer in Azerbaijani than the narrow portrait title bar has room for.
+ */
+class FitLabel(text: CharSequence, style: LabelStyle, private val minScale: Float = 0.7f) : Label(text, style) {
+    private val measure = GlyphLayout()
+
+    init {
+        setEllipsis(true)
+    }
+
+    override fun getMinWidth() = 0f
+
+    override fun layout() {
+        measure.setText(style.font, text)
+        val scale = if (measure.width <= 0f || width <= 0f) 1f else (width / measure.width).coerceIn(minScale, 1f)
+        if (scale != fontScaleX) setFontScale(scale)
+        super.layout()
+    }
+}
+
+/**
+ * The parts of the screen that camera holes and notches cover, converted to stage units.
+ * The Android launcher draws under cutouts, so the HUD and panels keep clear of these.
+ */
+class SafeArea {
+    var top = 0f
+        private set
+    var bottom = 0f
+        private set
+    var left = 0f
+        private set
+    var right = 0f
+        private set
+
+    fun update(stage: Stage) {
+        val g = Gdx.graphics
+        if (g.width <= 0 || g.height <= 0) return
+        val sx = stage.width / g.width
+        val sy = stage.height / g.height
+        top = g.safeInsetTop * sy
+        bottom = g.safeInsetBottom * sy
+        left = g.safeInsetLeft * sx
+        right = g.safeInsetRight * sx
     }
 }
 

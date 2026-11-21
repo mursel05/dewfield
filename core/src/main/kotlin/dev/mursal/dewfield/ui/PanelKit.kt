@@ -63,24 +63,28 @@ fun Table.line(a: Actor) {
     add(a).growX().padBottom(6f).row()
 }
 
-/** The right-hand detail pane background. */
+/** The detail pane background (below the list in portrait). */
 fun Ui.detailPane(): Table = Table().apply {
     background = inset
     pad(16f)
     top()
 }
 
-/** A two-column layout: a scrolling list on the left and details on the right. */
+/**
+ * The portrait list layout: a scrolling list on top and the selected entry's details pinned
+ * below it, where the thumb reaches the buy and sell buttons.
+ */
 class ListDetail(private val ui: Ui) {
     var scrollY = 0f
     private var pane: ScrollPane? = null
 
-    fun build(body: Table, list: Table, detail: Table, listWidth: Float = 540f) {
+    /** [detailHeight] is fixed so the list, not the buttons, gives way on short screens. */
+    fun build(body: Table, list: Table, detail: Table, detailHeight: Float) {
         list.top()
         val p = ui.scroll(list)
         pane = p
-        body.add(p).width(listWidth).growY().top()
-        body.add(detail).grow().padLeft(14f)
+        body.add(p).grow().top().row()
+        body.add(detail).growX().height(detailHeight).padTop(12f)
     }
 
     /** Call after the modal is laid out to keep the list where the player left it. */

@@ -18,10 +18,12 @@ private fun weatherIcon(w: Weather) = when (w) {
 
 // ---------------------------------------------------------------------- TV
 
-class TvPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("tv.title"), "info", 980f, 600f) {
+class TvPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("tv.title"), "info", prefH = Modal.FIT) {
     override fun fill(body: Table) {
         val s = farm.state
-        val left = ui.detailPane()
+        // Portrait: the forecast on top, market news and the tip of the day below it.
+        val forecast = ui.detailPane()
+        val left = forecast
         left.add(ui.label(ui.t("tv.forecast"), ui.head)).left().padBottom(10f).row()
         left.add(Table().apply {
             add(ui.icon(weatherIcon(s.tomorrowWeather), 96f)).size(96f).padRight(14f)
@@ -34,7 +36,6 @@ class TvPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("tv.title"), "info", 980f, 600f
                 add(ui.label(ui.f("tv.hot_line", ui.t("item.$hot")), ui.text, wrap = true)).growX()
             }).growX().row()
         }
-        left.add().expandY()
 
         val right = ui.detailPane()
         right.add(ui.label(ui.t("tv.market_news"), ui.head)).left().padBottom(10f).row()
@@ -50,12 +51,11 @@ class TvPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("tv.title"), "info", 980f, 600f
                 add(ui.label((if (pct > 0) "+" else "") + "$pct%", ui.head).also { it.color = if (d > 0) Ui.GOOD else Ui.BAD })
             }).growX().padBottom(6f).row()
         }
-        right.add().expandY().row()
-        right.add(ui.label(ui.t("tv.tip"), ui.head)).left().padBottom(6f).row()
+        right.add(ui.label(ui.t("tv.tip"), ui.head)).left().padTop(14f).padBottom(6f).row()
         right.add(ui.label(ui.t("tip.${s.day % TIPS}"), ui.text, wrap = true)).growX()
 
-        body.add(left).grow().padRight(12f)
-        body.add(right).grow()
+        body.add(forecast).growX().padBottom(12f).row()
+        body.add(right).growX()
     }
 
     companion object {
@@ -65,7 +65,7 @@ class TvPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("tv.title"), "info", 980f, 600f
 
 // ---------------------------------------------------------------------- bed
 
-class SleepPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("sleep.title"), "zzz", 820f, 520f) {
+class SleepPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("sleep.title"), "zzz", prefH = Modal.FIT) {
     override fun fill(body: Table) {
         val s = farm.state
         val dry = s.plots.count { it.crop != null && !it.dead && !it.watered && !farm.isRipe(it) }
@@ -81,7 +81,7 @@ class SleepPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("sleep.title"), "zzz", 820f,
             }
         }
         if (dry == 0 && ripe == 0) info.add(ui.info("check", ui.t("sleep.all_good"), color = Ui.GOOD)).growX().padBottom(10f).row()
-        body.add(info).grow().colspan(2).row()
+        body.add(info).grow().colspan(2).padBottom(10f).row()
         body.add(ui.button(ui.t("sleep.not_yet"), "cream") { ctx.close(this) }).growX().height(70f).padRight(10f)
         body.add(ui.button(ui.t("sleep.sleep"), "blue", "zzz") {
             ctx.close(this)
@@ -92,7 +92,7 @@ class SleepPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("sleep.title"), "zzz", 820f,
 
 // ---------------------------------------------------------------------- morning report
 
-class MorningPanel(ctx: GameUi, private val r: MorningReport) : Modal(ctx, ctx.ui.f("morning.title", r.day), weatherIcon(r.weather), 900f, 620f) {
+class MorningPanel(ctx: GameUi, private val r: MorningReport) : Modal(ctx, ctx.ui.f("morning.title", r.day), weatherIcon(r.weather), prefH = Modal.FIT) {
     override fun fill(body: Table) {
         val list = Table().apply { top() }
         fun line(icon: String, text: String, color: com.badlogic.gdx.graphics.Color? = null) {
@@ -111,14 +111,14 @@ class MorningPanel(ctx: GameUi, private val r: MorningReport) : Modal(ctx, ctx.u
         if (r.newOrders > 0) line("orders", ui.f("morning.orders_new", r.newOrders))
         r.hotItem?.let { line("star_gold", ui.f("morning.hot", ui.t("item.$it")), Ui.GOLD) }
         body.add(ui.scroll(list)).grow().row()
-        body.add(ui.button(ui.t("morning.go"), "green", "sun") { ctx.close(this) }).width(360f).height(70f).padTop(10f)
+        body.add(ui.button(ui.t("morning.go"), "green", "sun") { ctx.close(this) }).growX().height(72f).padTop(10f)
     }
 }
 
 // ---------------------------------------------------------------------- level up
 
 class LevelUpPanel(ctx: GameUi, private val level: Int, private val unlocks: List<String>) :
-    Modal(ctx, ctx.ui.f("level.title", level), "star_gold", 860f, 560f) {
+    Modal(ctx, ctx.ui.f("level.title", level), "star_gold", prefH = Modal.FIT) {
     override fun fill(body: Table) {
         body.add(ui.label(ui.t("level.congrats"), ui.head, wrap = true, align = Align.center)).growX().padBottom(14f).row()
         val grid = Table()
@@ -136,18 +136,19 @@ class LevelUpPanel(ctx: GameUi, private val level: Int, private val unlocks: Lis
                 add(ui.icon(icon, 64f)).size(64f).row()
                 add(ui.label(ui.t(key), ui.small, wrap = true, align = Align.center)).width(150f)
             }).pad(6f)
-            if (i % 4 == 3) grid.row()
+            if (i % 3 == 2) grid.row()
         }
         if (unlocks.isEmpty()) grid.add(ui.label(ui.t("level.nothing_new"), ui.text))
-        body.add(grid).expand().row()
-        body.add(ui.button(ui.t("ui.great"), "green", "check") { ctx.close(this) }).width(320f).height(70f)
+        body.add(grid).expand().padBottom(18f).row()
+        body.add(ui.button(ui.t("ui.great"), "green", "check") { ctx.close(this) }).growX().height(72f)
     }
 }
 
 // ---------------------------------------------------------------------- pause menu
 
-class PausePanel(ctx: GameUi, private val settings: Settings) : Modal(ctx, ctx.ui.t("pause.title"), "menu", 900f, 600f) {
+class PausePanel(ctx: GameUi, private val settings: Settings) : Modal(ctx, ctx.ui.t("pause.title"), "menu", prefH = Modal.FIT) {
     override fun fill(body: Table) {
+        // Portrait: the buttons first, the farm's stats below them.
         val left = Table().apply { top() }
         left.add(ui.button(ui.t("pause.resume"), "green", "play") { ctx.close(this) }).growX().height(70f).padBottom(12f).row()
         left.add(ui.button(ui.t(if (settings.sound) "pause.sound_on" else "pause.sound_off"), "cream", if (settings.sound) "sound_on" else "sound_off") {
@@ -162,7 +163,6 @@ class PausePanel(ctx: GameUi, private val settings: Settings) : Modal(ctx, ctx.u
             settings.lang = if (settings.lang == Lang.EN) Lang.AZ else Lang.EN
             ctx.relabel()
         }).growX().height(64f).padBottom(10f).row()
-        left.add().expandY().row()
         left.add(ui.button(ui.t("pause.exit"), "red", "home") { ctx.exitToTitle() }).growX().height(66f)
 
         val st = farm.state.stats
@@ -182,10 +182,9 @@ class PausePanel(ctx: GameUi, private val settings: Settings) : Modal(ctx, ctx.u
         stat("egg", "stats.products", st.productsCollected)
         stat("orders", "stats.orders", st.ordersDone)
         stat("heart", "stats.animals", farm.state.animals.size)
-        right.add().expandY().row()
-        right.add(ui.label(ui.t("pause.autosave"), ui.soft, wrap = true)).growX()
+        right.add(ui.label(ui.t("pause.autosave"), ui.soft, wrap = true)).growX().padTop(8f)
 
-        body.add(left).width(360f).growY().padRight(14f)
-        body.add(right).grow()
+        body.add(left).growX().padBottom(14f).row()
+        body.add(right).growX()
     }
 }

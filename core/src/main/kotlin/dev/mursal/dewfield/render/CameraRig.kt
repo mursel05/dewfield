@@ -9,11 +9,16 @@ import kotlin.math.exp
 /**
  * The world camera, in tile units. It follows the farmer smoothly; a finger drag pans it
  * freely until the farmer walks again, and a pinch zooms between [MIN_VIEW] and [MAX_VIEW]
- * tiles of height. It never shows past the edges of the map.
+ * tiles across the screen's short side. It never shows past the edges of the map.
+ *
+ * The view is measured on the short side so a portrait phone shows the same width of farm
+ * whatever its aspect ratio; a taller phone simply sees more rows. Screens squatter than 9:16
+ * (tablets) keep the rows a 9:16 phone sees and get extra width instead, so the farm doesn't
+ * turn into a letterbox.
  */
 class CameraRig {
     val cam = OrthographicCamera()
-    /** Visible height in tiles. */
+    /** Visible tiles across the screen's short side (the width on a portrait phone). */
     var view = DEFAULT_VIEW
         private set
     private var mapW = 1f
@@ -33,8 +38,13 @@ class CameraRig {
     fun resize() {
         val sw = Gdx.graphics.width.coerceAtLeast(1)
         val sh = Gdx.graphics.height.coerceAtLeast(1)
-        cam.viewportHeight = view
-        cam.viewportWidth = view * sw / sh
+        if (sw <= sh) {
+            cam.viewportHeight = view * maxOf(sh.toFloat() / sw, PHONE_TALL)
+            cam.viewportWidth = cam.viewportHeight * sw / sh
+        } else {
+            cam.viewportHeight = view
+            cam.viewportWidth = view * sw / sh
+        }
         clamp()
         cam.update()
     }
@@ -102,5 +112,8 @@ class CameraRig {
         const val DEFAULT_VIEW = 10.5f
         const val MIN_VIEW = 6.5f
         const val MAX_VIEW = 15f
+
+        /** Height over width of a 9:16 phone: the squattest screen that gets exactly [view] tiles across. */
+        private const val PHONE_TALL = 16f / 9f
     }
 }

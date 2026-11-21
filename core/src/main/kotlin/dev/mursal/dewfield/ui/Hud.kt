@@ -21,9 +21,15 @@ import dev.mursal.dewfield.world.World
 import kotlin.math.roundToInt
 
 /**
- * The always-on overlay: clock and weather, coins, energy, level, the seed bar, the water can,
- * the task queue, and buttons for orders, bag and menu. Laid out against the screen edges so it
- * works on any landscape aspect ratio.
+ * The always-on overlay, laid out for portrait screens:
+ *
+ * - top left, two rows of pills: clock and weather, coins / energy, level;
+ * - top right, a column of round buttons: menu, bag, orders;
+ * - bottom, on the farm: the water can and the task queue, then the seed bar across the screen,
+ *   which scrolls sideways when the player owns more seeds than fit.
+ *
+ * Everything is placed against the screen edges inside the cutout-safe area, so it works from
+ * 3:4 tablets to 9:21 phones.
  */
 class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val onBag: () -> Unit, private val onMenu: () -> Unit) : Group() {
     private val ui get() = ctx.ui
@@ -33,6 +39,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
     private val topLeft = Table()
     private val topRight = Table()
     private val bottom = Table()
+    private val canChip = Table()
     private val queueChip = Table()
     private val marketChip = Table()
 
@@ -46,6 +53,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
     private lateinit var ordersBadge: Table
     private lateinit var ordersBadgeLabel: Label
     private lateinit var marketLabel: Label
+    private var seedScroll: com.badlogic.gdx.scenes.scene2d.ui.ScrollPane? = null
 
     private var shownMoney = 0f
     private var lastMinute = -1
@@ -54,11 +62,17 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
     private var refreshIn = 0f
     private var hidden = false
 
+    /** Height the top pills take, so toasts can start below them. */
+    /** How far down the HUD reaches from the top of the screen; toasts start below it. */
+    val topHeight: Float
+        get() = ui.safe.top + Ui.MARGIN + topLeft.height + if (marketChip.isVisible) MARKET_GAP + marketChip.height else 0f
+
     init {
         touchable = Touchable.childrenOnly
         addActor(topLeft)
         addActor(topRight)
         addActor(bottom)
+        addActor(canChip)
         addActor(queueChip)
         addActor(marketChip)
         build()
@@ -90,7 +104,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
 
         val energy = Table().apply { background = ui.pill }
         energy.add(ui.icon("energy", 38f)).size(38f).padRight(6f)
-        energy.add(ui.bar("energy", 130f, 22f) { farm.state.energy / Farm.MAX_ENERGY.toFloat() }).size(130f, 22f).padRight(8f)
+        energy.add(ui.bar("energy", 120f, 22f) { farm.state.energy / Farm.MAX_ENERGY.toFloat() }).size(120f, 22f).padRight(8f)
         energyLabel = ui.label("", ui.small)
         energy.add(energyLabel).width(36f)
 
@@ -98,17 +112,17 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         level.add(ui.icon("xp", 38f)).size(38f).padRight(6f)
         levelLabel = ui.label("", ui.head)
         level.add(levelLabel).padRight(8f)
-        level.add(ui.bar("xp", 100f, 18f) { farm.levelProgress()?.let { (a, b) -> a / b.toFloat() } ?: 1f }).size(100f, 18f)
+        level.add(ui.bar("xp", 90f, 18f) { farm.levelProgress()?.let { (a, b) -> a / b.toFloat() } ?: 1f }).size(90f, 18f)
 
         topLeft.left()
-        topLeft.defaults().padRight(10f).height(60f)
-        topLeft.add(clock)
-        topLeft.add(money)
-        topLeft.add(energy)
-        topLeft.add(level)
+        topLeft.defaults().left().height(60f)
+        topLeft.add(clock).padRight(10f)
+        topLeft.add(money).row()
+        topLeft.add(energy).padRight(10f).padTop(10f)
+        topLeft.add(level).padTop(10f)
         topLeft.pack()
 
-        val orders = ui.roundButton("orders", 74f) { onOrders() }
+        val orders = ui.roundButton("orders", BUTTON) { onOrders() }
         ordersBadgeLabel = ui.label("", ui.small.let { Label.LabelStyle(it.font, Color.WHITE) }, align = Align.center)
         ordersBadge = Table().apply {
             background = ui.badge
@@ -116,14 +130,14 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
             touchable = Touchable.disabled
         }
         val ordersGroup = Group().apply {
-            setSize(74f, 74f)
+            setSize(BUTTON, BUTTON)
             addActor(orders)
             addActor(ordersBadge)
-            ordersBadge.setBounds(50f, 50f, 28f, 28f)
+            ordersBadge.setBounds(BUTTON - 26f, BUTTON - 26f, 28f, 28f)
         }
-        topRight.add(ordersGroup).size(74f).padLeft(10f)
-        topRight.add(ui.roundButton("bag", 74f) { onBag() }).size(74f).padLeft(10f)
-        topRight.add(ui.roundButton("menu", 74f) { onMenu() }).size(74f).padLeft(10f)
+        topRight.add(ui.roundButton("menu", BUTTON) { onMenu() }).size(BUTTON).row()
+        topRight.add(ui.roundButton("bag", BUTTON) { onBag() }).size(BUTTON).padTop(10f).row()
+        topRight.add(ordersGroup).size(BUTTON).padTop(10f)
         topRight.pack()
 
         queueChip.background = ui.pill
@@ -145,7 +159,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         layoutTo()
     }
 
-    /** Re-reads inventory-dependent widgets (seed bar, badges). */
+    /** Re-reads inventory-dependent widgets (seed bar, water can, badges). */
     fun refresh() {
         val items = world.barItems()
         val signature = items.joinToString { "$it:${farm.count(it)}" } + "|" + farm.state.selected + "|" + world.location.id +
@@ -160,37 +174,59 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
     }
 
     private fun buildBottom(items: List<String>) {
+        val keepScroll = seedScroll?.scrollX ?: 0f
         bottom.clear()
-        if (world.location.id != Locations.FARM) {
-            bottom.isVisible = false
-            return
-        }
-        bottom.isVisible = true
-        val can = Table().apply { background = ui.pill }
-        can.add(ui.icon("can", 44f)).size(44f).padRight(6f)
+        canChip.clear()
+        seedScroll = null
+        val onFarm = world.location.id == Locations.FARM
+        bottom.isVisible = onFarm
+        canChip.isVisible = onFarm
+        if (!onFarm) return
+
+        canChip.background = ui.pill
+        canChip.add(ui.icon("can", 44f)).size(44f).padRight(6f)
         val canTable = Table()
         canTable.add(ui.label("${farm.state.canWater}/${farm.canCapacity}", ui.small)).row()
         canTable.add(ui.bar("water", 86f, 16f) { farm.state.canWater / farm.canCapacity.toFloat() }).size(86f, 16f)
-        can.add(canTable)
-        bottom.add(can).height(76f).padRight(12f)
+        canChip.add(canTable)
+        canChip.pack()
 
         val bar = Table().apply { background = ui.pill }
         if (items.isEmpty()) {
             bar.add(ui.icon("seed", 40f)).size(40f).padRight(8f)
             bar.add(ui.label(ui.t("hud.no_seeds"), ui.text)).padRight(6f)
-        }
-        for (id in items) {
-            val sel = farm.state.selected == id
-            val slot = ui.card(sel) {
-                farm.select(if (farm.state.selected == id) null else id)
-                refresh()
+            bottom.add(bar).height(BAR)
+        } else {
+            val strip = Table()
+            for (id in items) {
+                val sel = farm.state.selected == id
+                val slot = ui.card(sel) {
+                    farm.select(if (farm.state.selected == id) null else id)
+                    refresh()
+                }
+                slot.add(ui.item(id, 50f, farm.count(id))).size(50f)
+                strip.add(slot).size(SLOT).pad(0f, 3f, 0f, 3f)
             }
-            slot.add(ui.item(id, 50f, farm.count(id))).size(50f)
-            bar.add(slot).size(70f).pad(0f, 3f, 0f, 3f)
+            strip.pack()
+            val scroll = ui.scrollX(strip)
+            seedScroll = scroll
+            val maxStrip = barWidthLimit() - BAR_PAD * 2
+            bar.add(scroll).width(minOf(strip.prefWidth, maxStrip)).height(SLOT)
+            bar.pad(0f, BAR_PAD, 0f, BAR_PAD)
+            bottom.add(bar).height(BAR)
+            bottom.validate()
+            scroll.layout()
+            scroll.scrollX = keepScroll
+            scroll.updateVisualScroll()
         }
-        bottom.add(bar).height(84f)
         bottom.pack()
         layoutTo()
+    }
+
+    private fun barWidthLimit(): Float {
+        val s = stage
+        val w = s?.width ?: Ui.WIDTH
+        return w - Ui.MARGIN * 2 - ui.safe.left - ui.safe.right
     }
 
     fun update(dt: Float) {
@@ -223,7 +259,11 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         levelLabel.setText(ui.f("hud.level", farm.level))
 
         val queued = world.queue.count { it is Task.Plot } + if (world.current is Task.Plot) 1 else 0
-        queueChip.isVisible = queued > 1
+        val showQueue = queued > 1
+        if (showQueue != queueChip.isVisible) {
+            queueChip.isVisible = showQueue
+            layoutTo()
+        }
         queueLabel.setText(queued.toString())
         marketChip.isVisible = world.location.id == Locations.MARKET
         // Label texts change width (day 9 -> 10, 999 -> 1000 coins); keep the pills fitted.
@@ -248,17 +288,34 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         val s = stage ?: return
         setSize(s.width, s.height)
         refreshIn = 0f
-        val m = 16f
+        val safe = ui.safe
+        val m = Ui.MARGIN
+        val left = m + safe.left
+        val right = s.width - m - safe.right
+        val top = s.height - m - safe.top
+        val floor = m + safe.bottom
         topLeft.pack()
-        topLeft.setPosition(m, s.height - m - topLeft.height)
+        topLeft.setPosition(left, top - topLeft.height)
         topRight.pack()
-        topRight.setPosition(s.width - m - topRight.width, s.height - m - topRight.height)
-        bottom.pack()
-        bottom.setPosition((s.width - bottom.width) / 2f, m)
-        queueChip.pack()
-        queueChip.setPosition(m, m + 4f)
+        topRight.setPosition(right - topRight.width, top - topRight.height)
         marketChip.pack()
-        marketChip.setPosition(m, s.height - m - topLeft.height - 10f - marketChip.height)
+        marketChip.setPosition(left, top - topLeft.height - MARKET_GAP - marketChip.height)
+
+        bottom.pack()
+        bottom.setPosition(((left + right) - bottom.width) / 2f, floor)
+        val above = if (bottom.isVisible) floor + bottom.height + 10f else floor
+        canChip.pack()
+        canChip.setPosition(left, above)
+        queueChip.pack()
+        queueChip.setPosition(right - queueChip.width, above + ((canChip.height - queueChip.height) / 2f).coerceAtLeast(0f))
+    }
+
+    private companion object {
+        const val BUTTON = 72f
+        const val SLOT = 70f
+        const val BAR = 84f
+        const val BAR_PAD = 7f
+        const val MARKET_GAP = 10f
     }
 }
 
@@ -268,7 +325,7 @@ class Toasts(private val ui: Ui) : Table() {
     private var lastTime = 0L
 
     /** Widest a toast may get before it wraps. */
-    var maxTextWidth = 720f
+    var maxTextWidth = 520f
 
     init {
         touchable = Touchable.disabled

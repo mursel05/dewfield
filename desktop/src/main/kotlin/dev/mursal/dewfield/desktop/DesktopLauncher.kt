@@ -9,15 +9,16 @@ import java.io.File
  * Desktop entry point for development.
  *
  *   ./gradlew :desktop:run
- *   ./gradlew :desktop:run --args="--tour build/tour --size 1600x720"
+ *   ./gradlew :desktop:run --args="--tour build/tour --size 720x1600"
  *
  * `--tour` plays a scripted walk through every screen and writes screenshots, then quits.
+ * The window is portrait by default, like the phone.
  */
 fun main(args: Array<String>) {
     val opts = args.toList()
     val tour = opts.indexOf("--tour").takeIf { it >= 0 }?.let { File(opts.getOrElse(it + 1) { "tour" }) }
     val size = opts.indexOf("--size").takeIf { it >= 0 }?.let { opts.getOrNull(it + 1) }?.split('x')?.mapNotNull { it.toIntOrNull() }
-    val (w, h) = if (size != null && size.size == 2) size[0] to size[1] else 1280 to 720
+    val (w, h) = if (size != null && size.size == 2) size[0] to size[1] else 450 to 900
     val config = Lwjgl3ApplicationConfiguration().apply {
         setTitle("Dewfield")
         setWindowedMode(w, h)

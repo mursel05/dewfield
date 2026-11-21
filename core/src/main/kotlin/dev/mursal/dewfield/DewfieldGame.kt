@@ -41,10 +41,10 @@ class DewfieldGame(val director: Director? = null) : Game() {
     override fun create() {
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         settings = Settings()
-        val scale = minOf(Gdx.graphics.width / 1280f, Gdx.graphics.height / 720f).coerceIn(1f, 3f)
+        val scale = minOf(Gdx.graphics.width / Ui.WIDTH, Gdx.graphics.height / Ui.HEIGHT).coerceIn(1f, 3f)
         assets = Assets(scale)
         audio = Audio(settings)
-        saves = SaveStore(Locations.FIELD)
+        saves = SaveStore(Locations.FIELD, Locations.FIELD_V2)
         batch = SpriteBatch()
         reloadStrings()
         ui = Ui(assets, { strings }, audio)

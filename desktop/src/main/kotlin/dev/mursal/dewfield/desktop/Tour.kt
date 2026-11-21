@@ -20,6 +20,7 @@ import java.io.File
 /**
  * A scripted walk through the game that saves a screenshot of every screen. It is the
  * visual check for changes to art, rendering or UI, and it runs headless under xvfb in CI.
+ * Run it at portrait sizes (720x1600 for a modern phone, 960x1280 for a tablet).
  */
 class Tour(private val out: File) : Director {
     private class Step(val frames: Int, val action: (DewfieldGame) -> Unit)
@@ -67,14 +68,15 @@ class Tour(private val out: File) : Director {
         shot("02_house_morning")
         step(50) { g ->
             g.play().warp(Locations.FARM, "house_door")
-            g.play().world.player.apply { x = 17.5f; y = 16.5f }
+            g.play().world.player.apply { x = 10.5f; y = 16.5f }
         }
         shot("03_farm_morning")
         step(12) { g ->
             val w = g.play().world
             g.play().farm.select("carrot_seeds")
-            for (x in 11..14) w.tap(x + 0.5f, 15.5f)
-            w.tap(19.5f, 20.5f)
+            // Till the top row of the third field block, then water a crop in the second.
+            for (x in 6..9) w.tap(x + 0.5f, 7.5f)
+            w.tap(12.5f, 14.5f)
         }
         shot("04_farm_tasks")
         step(260) {}
@@ -82,7 +84,7 @@ class Tour(private val out: File) : Director {
         step(50) { g ->
             g.play().farm.state.minutes = 10 * 60.0
             g.play().warp(Locations.MARKET, "farm_road")
-            g.play().world.player.apply { x = 12.5f; y = 11.5f }
+            g.play().world.player.apply { x = 7.5f; y = 20.5f }
         }
         shot("06_market")
         panel(Panel.SHOP_SEEDS, "07_seeds")
@@ -93,7 +95,7 @@ class Tour(private val out: File) : Director {
         step(30) { g ->
             g.play().closeAll()
             g.play().warp(Locations.FARM, "market_road")
-            g.play().world.player.apply { x = 30.5f; y = 10.5f }
+            g.play().world.player.apply { x = 8.5f; y = 33.5f }
         }
         shot("12_farm_animals")
         panel(Panel.MACHINE, "13_mill", "mill")
@@ -112,7 +114,7 @@ class Tour(private val out: File) : Director {
             g.play().closeAll()
             g.play().farm.state.minutes = 19 * 60 + 15.0
             g.play().warp(Locations.FARM, "house_door")
-            g.play().world.player.apply { x = 12.5f; y = 16.5f }
+            g.play().world.player.apply { x = 7.5f; y = 16.5f }
         }
         shot("19_farm_sunset")
         step(40) { g -> g.play().farm.state.minutes = 22 * 60.0 }
@@ -126,7 +128,7 @@ class Tour(private val out: File) : Director {
             g.play().farm.state.weather = Weather.SUNNY
             g.play().farm.state.minutes = 21 * 60.0
             g.play().warp(Locations.MARKET, "farm_road")
-            g.play().world.player.apply { x = 14.5f; y = 6.5f }
+            g.play().world.player.apply { x = 8.5f; y = 12.5f }
         }
         shot("22_market_night")
         step(40) { g ->
@@ -181,7 +183,8 @@ class Tour(private val out: File) : Director {
         for (p in s.plots) {
             val block = Locations.FIELD.blockIndex(p.cell) ?: continue
             if (block >= 2) continue
-            val crop = crops[(p.x - 11) / 3 % 2 + block * 2 + (p.y % 2) * 4]
+            // Blocks are 4 wide: two crops side by side in each, alternating by row.
+            val crop = crops[(p.x - 6) / 2 % 2 + block * 2 + (p.y % 2) * 4]
             val def = ItemDb.crop(crop)
             p.tilled = true
             p.crop = crop
@@ -189,7 +192,7 @@ class Tour(private val out: File) : Director {
             p.fertilized = p.x % 4 == 0
             p.growth = ((p.x * 7 + p.y * 3) % (def.growDays + 1))
         }
-        s.plots.firstOrNull { it.x == 16 && it.y == 17 }?.apply { dead = true }
+        s.plots.firstOrNull { it.x == 9 && it.y == 13 }?.apply { dead = true }
         s.animals += AnimalState(s.nextAnimalId++, "chicken", "Mimi")
         s.animals += AnimalState(s.nextAnimalId++, "cow", "Marta", mood = 8)
         s.animals += AnimalState(s.nextAnimalId++, "cow", "Bella", mood = 6)

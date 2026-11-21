@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
@@ -24,6 +25,7 @@ import dev.mursal.dewfield.model.ItemDb
 import dev.mursal.dewfield.render.CameraRig
 import dev.mursal.dewfield.render.Lighting
 import dev.mursal.dewfield.render.WorldRenderer
+import dev.mursal.dewfield.ui.Ui
 import dev.mursal.dewfield.world.Locations
 import dev.mursal.dewfield.world.World
 import kotlin.math.sin
@@ -31,10 +33,13 @@ import kotlin.math.sin
 /**
  * The title: a living demo farm drifts by behind the logo. Continue, New farm,
  * language and sound. A new farm over an existing save asks first.
+ *
+ * In portrait the logo sits near the top and the buttons in the lower half, within thumb
+ * reach, so the farm shows through the middle of the screen.
  */
 class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
     private val ui get() = game.ui
-    private val stage = Stage(ExtendViewport(1280f, 720f), game.batch)
+    private val stage = Stage(ExtendViewport(Ui.WIDTH, Ui.HEIGHT), game.batch)
     private val demo = demoFarm()
     private val world = World(demo).also { it.enter(Locations.FARM, "house_door") }
     private val renderer = WorldRenderer(game.assets, world)
@@ -44,6 +49,8 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
     private var t = 0f
     private val root = Table()
     private var confirm: Table? = null
+    private var logoCell: Cell<*>? = null
+    private var footCell: Cell<*>? = null
 
     init {
         stage.addActor(root)
@@ -55,7 +62,8 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
         root.clear()
         confirm = null
         val logo = Image(game.assets.region("ui/logo")).apply { setScaling(Scaling.fit) }
-        root.add(logo).width(720f).height(208f).padBottom(18f).row()
+        logoCell = root.add(logo).width(640f).height(185f).expandY().top()
+        root.row()
         val buttons = Table()
         if (game.saves.exists()) {
             buttons.add(ui.button(ui.t("title.continue"), "green", "play", 76f) { game.continueGame() }).width(420f).height(76f).padBottom(14f).row()
@@ -77,9 +85,17 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
         buttons.add(small)
         root.add(buttons).row()
         val version = ui.label(ui.f("title.version", VERSION), ui.light)
-        root.add(version).padTop(26f)
+        footCell = root.add(version).padTop(26f)
+        applySafeArea()
         root.color.a = 0f
         root.addAction(Actions.fadeIn(0.5f))
+    }
+
+    /** Keeps the logo clear of a notch and the version line clear of the gesture bar. */
+    private fun applySafeArea() {
+        logoCell?.padTop(ui.safe.top + LOGO_TOP)
+        footCell?.padBottom(ui.safe.bottom + FOOT_BOTTOM)
+        root.invalidate()
     }
 
     private fun askNewFarm() {
@@ -87,9 +103,9 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
         val box = Table().apply {
             background = ui.panel
             pad(28f)
-            add(ui.label(ui.t("title.confirm_new"), ui.head, wrap = true, align = Align.center)).width(560f).colspan(2).padBottom(20f).row()
-            add(ui.button(ui.t("ui.cancel"), "cream") { remove(); confirm = null }).width(260f).height(68f).padRight(12f)
-            add(ui.button(ui.t("title.confirm_yes"), "red") { game.newGame() }).width(260f).height(68f)
+            add(ui.label(ui.t("title.confirm_new"), ui.head, wrap = true, align = Align.center)).width(540f).colspan(2).padBottom(20f).row()
+            add(ui.button(ui.t("ui.cancel"), "cream") { remove(); confirm = null }).width(264f).height(68f).padRight(12f)
+            add(ui.button(ui.t("title.confirm_yes"), "red") { game.newGame() }).width(264f).height(68f)
             pack()
             setPosition((stage.width - width) / 2f, (stage.height - height) / 2f)
             touchable = Touchable.enabled
@@ -115,13 +131,15 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
         })
         resize(Gdx.graphics.width, Gdx.graphics.height)
         rig.setMap(world.location.width, world.location.height, 11f)
-        rig.snap(12f, 15f)
+        rig.snap(11f, 21f)
         game.audio.music("day")
     }
 
     override fun resize(width: Int, height: Int) {
         if (width <= 0 || height <= 0) return
         stage.viewport.update(width, height, true)
+        ui.safe.update(stage)
+        applySafeArea()
         rig.resize()
         lighting.resize(width, height)
         confirm?.let { it.setPosition((stage.width - it.width) / 2f, (stage.height - it.height) / 2f) }
@@ -134,7 +152,7 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
         world.events.clear()
         // A slow drift over the farm.
         rig.manual = true
-        rig.cam.position.set(20f + sin(t * 0.05f) * 9f, 14.5f + sin(t * 0.08f) * 1.5f, 0f)
+        rig.cam.position.set(11f + sin(t * 0.05f) * 3f, 21f + sin(t * 0.04f) * 9f, 0f)
         rig.resize()
         renderer.update(dt, rig.left, rig.bottom, rig.right, rig.top)
 
@@ -156,6 +174,9 @@ class TitleScreen(private val game: DewfieldGame) : ScreenAdapter() {
 
     companion object {
         const val VERSION = "0.2.0"
+        private const val LOGO_TOP = 150f
+        // .github/scripts/smoke-test.sh taps "New farm" 230 units above the bottom edge: keep it in step.
+        private const val FOOT_BOTTOM = 56f
 
         /** A pretty, never-saved farm for the background. */
         fun demoFarm(): Farm {

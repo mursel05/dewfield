@@ -63,7 +63,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     private val rig = CameraRig()
     private val renderer: WorldRenderer
     private val lighting = Lighting()
-    private val stage = Stage(ExtendViewport(1280f, 720f), game.batch)
+    private val stage = Stage(ExtendViewport(Ui.WIDTH, Ui.HEIGHT), game.batch)
     private val modals = ModalHost(game.ui)
     private val toasts = Toasts(game.ui)
     private val floaters = Floaters(game.ui)
@@ -111,6 +111,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     override fun resize(width: Int, height: Int) {
         if (width <= 0 || height <= 0) return
         stage.viewport.update(width, height, true)
+        ui.safe.update(stage)
         rig.resize()
         lighting.resize(width, height)
         hud.layoutTo()
@@ -151,13 +152,15 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
         hud.update(dt)
         val panel = modals.isOpen
         hud.setHidden(panel)
-        if (toastsOverPanel != panel) {
-            // Above a panel the toasts use the strip the hidden HUD leaves free, one line wide,
-            // and messages about the world make way for the panel's own.
+        // Above a panel the toasts use the strip kept free over it, one line wide, and messages
+        // about the world make way for the panel's own. Otherwise they sit under the top pills
+        // (which grow a row at the market), narrow enough to clear the round buttons on the right.
+        val toastTop = if (panel) ui.safe.top + 8f else hud.topHeight + 14f
+        if (toastsOverPanel != panel || toasts.padTop != toastTop) {
             if (panel && toastsOverPanel == false) toasts.fadeAll()
             toastsOverPanel = panel
-            toasts.padTop(if (panel) 8f else 96f)
-            toasts.maxTextWidth = if (panel) stage.width - 120f else 720f
+            toasts.padTop(toastTop)
+            toasts.maxTextWidth = if (panel) stage.width - 64f else stage.width - 2 * TOAST_SIDE
             toasts.invalidate()
         }
         music()
@@ -244,7 +247,8 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
 
     private fun enterCamera() {
         val loc = world.location
-        rig.setMap(loc.width, loc.height, if (loc.indoor) 9.6f else CameraRig.DEFAULT_VIEW)
+        // Indoors the whole room fits across the screen; outdoors the camera shows a slice and follows.
+        rig.setMap(loc.width, loc.height, if (loc.indoor) loc.width + 0.4f else CameraRig.DEFAULT_VIEW)
         rig.snap(world.player.x, world.player.y + 0.4f)
         renderer.effects.clearAmbient()
     }
@@ -504,6 +508,9 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
         private const val AUTOSAVE_SECONDS = 45f
         private const val HINT_GAP_SECONDS = 7f
         private const val STEP_SECONDS = 2f / 9f
+
+        /** Space toasts leave on each side under the HUD: the round buttons plus a gap. */
+        private const val TOAST_SIDE = 100f
         private val OUTDOOR_BG = Color.valueOf("4f8a3a")
         private val INDOOR_BG = Color.valueOf("2b2118")
     }

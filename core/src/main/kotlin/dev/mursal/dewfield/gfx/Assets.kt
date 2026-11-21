@@ -14,7 +14,7 @@ import kotlin.math.roundToInt
 /**
  * Everything drawn comes from one texture atlas (rendered from SVG at 128 px per tile) and two
  * Nunito weights. Fonts are rasterised at the device's real pixel size and scaled back to the
- * 1280x720 virtual UI, so text stays sharp on every screen density.
+ * 720x1280 portrait virtual UI, so text stays sharp on every screen density.
  */
 class Assets(uiScale: Float) : Disposable {
     val atlas = TextureAtlas(Gdx.files.internal("atlas/game.atlas"))
