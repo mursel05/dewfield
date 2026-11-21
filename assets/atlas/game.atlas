@@ -1,0 +1,2384 @@
+
+game.png
+size: 2048, 2048
+format: RGBA8888
+filter: MipMapLinearLinear, Linear
+repeat: none
+animal/chicken_0
+  rotate: false
+  xy: 1938, 649
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_1
+  rotate: false
+  xy: 1550, 1561
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_2
+  rotate: false
+  xy: 1550, 1461
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_3
+  rotate: false
+  xy: 1946, 549
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_brown_0
+  rotate: false
+  xy: 1946, 449
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_brown_1
+  rotate: false
+  xy: 1946, 349
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_brown_2
+  rotate: false
+  xy: 1946, 249
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+animal/chicken_brown_3
+  rotate: false
+  xy: 1946, 117
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+fx/butterfly_0
+  rotate: false
+  xy: 554, 42
+  size: 48, 40
+  orig: 48, 40
+  offset: 0, 0
+  index: -1
+fx/clod
+  rotate: false
+  xy: 1650, 1597
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+fx/dot
+  rotate: false
+  xy: 1426, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+fx/drop
+  rotate: false
+  xy: 1650, 1625
+  size: 24, 32
+  orig: 24, 32
+  offset: 0, 0
+  index: -1
+fx/leaf
+  rotate: false
+  xy: 2, 3
+  size: 32, 24
+  orig: 32, 24
+  offset: 0, 0
+  index: -1
+fx/rain
+  rotate: false
+  xy: 1650, 1393
+  size: 12, 64
+  orig: 12, 64
+  offset: 0, 0
+  index: -1
+fx/shadow
+  rotate: false
+  xy: 54, 15
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+fx/smoke
+  rotate: false
+  xy: 486, 15
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+fx/sparkle
+  rotate: false
+  xy: 2, 31
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+icon/animal_chicken
+  rotate: false
+  xy: 1938, 1949
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/animal_cow
+  rotate: false
+  xy: 1938, 1849
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/animal_sheep
+  rotate: false
+  xy: 1938, 1749
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/arrow_down
+  rotate: false
+  xy: 1938, 1649
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/arrow_flat
+  rotate: false
+  xy: 1938, 1549
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/arrow_up
+  rotate: false
+  xy: 1938, 1449
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/bag
+  rotate: false
+  xy: 1938, 1349
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/basket
+  rotate: false
+  xy: 1938, 1249
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/can
+  rotate: false
+  xy: 1938, 1149
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/upgrade_can
+  rotate: false
+  xy: 1938, 1149
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/carrot
+  rotate: false
+  xy: 1938, 1049
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/carrot_seeds
+  rotate: false
+  xy: 1938, 949
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/check
+  rotate: false
+  xy: 1938, 849
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/cheese
+  rotate: false
+  xy: 1938, 749
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/clock
+  rotate: false
+  xy: 1946, 17
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/close
+  rotate: false
+  xy: 1426, 38
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/cloth
+  rotate: false
+  xy: 1038, 968
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/cloud
+  rotate: false
+  xy: 1038, 868
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/clover
+  rotate: false
+  xy: 1038, 768
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/clover_mix
+  rotate: false
+  xy: 1038, 668
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/clover_seeds
+  rotate: false
+  xy: 518, 486
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/coin
+  rotate: false
+  xy: 518, 386
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/corn
+  rotate: false
+  xy: 518, 286
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/corn_seeds
+  rotate: false
+  xy: 518, 186
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+obj/barn
+  rotate: false
+  xy: 646, 31
+  size: 512, 614
+  orig: 512, 614
+  offset: 0, 0
+  index: -1
+obj/bed
+  rotate: false
+  xy: 646, 1150
+  size: 256, 294
+  orig: 256, 294
+  offset: 0, 0
+  index: -1
+obj/board
+  rotate: false
+  xy: 646, 852
+  size: 256, 294
+  orig: 256, 294
+  offset: 0, 0
+  index: -1
+obj/cheese_press
+  rotate: false
+  xy: 1550, 6
+  size: 128, 205
+  orig: 128, 205
+  offset: 0, 0
+  index: -1
+obj/clover_tray_0
+  rotate: false
+  xy: 906, 669
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/clover_tray_1
+  rotate: false
+  xy: 906, 885
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/doormat
+  rotate: false
+  xy: 1162, 6
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/fert
+  rotate: false
+  xy: 1294, 6
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/fountain
+  rotate: false
+  xy: 2, 83
+  size: 512, 499
+  orig: 512, 499
+  offset: 0, 0
+  index: -1
+obj/house
+  rotate: false
+  xy: 2, 1179
+  size: 640, 602
+  orig: 640, 602
+  offset: 0, 0
+  index: -1
+obj/loom
+  rotate: false
+  xy: 1682, 6
+  size: 128, 205
+  orig: 128, 205
+  offset: 0, 0
+  index: -1
+obj/mill
+  rotate: false
+  xy: 1550, 680
+  size: 384, 691
+  orig: 384, 691
+  offset: 0, 0
+  index: -1
+obj/rug
+  rotate: false
+  xy: 906, 1661
+  size: 768, 384
+  orig: 768, 384
+  offset: 0, 0
+  index: -1
+obj/sign
+  rotate: false
+  xy: 1814, 6
+  size: 128, 205
+  orig: 128, 205
+  offset: 0, 0
+  index: -1
+obj/stall_feed
+  rotate: false
+  xy: 1162, 603
+  size: 384, 461
+  orig: 384, 461
+  offset: 0, 0
+  index: -1
+obj/stall_feed_front
+  rotate: false
+  xy: 1550, 215
+  size: 384, 461
+  orig: 384, 461
+  offset: 0, 0
+  index: -1
+obj/stall_produce
+  rotate: false
+  xy: 1162, 138
+  size: 384, 461
+  orig: 384, 461
+  offset: 0, 0
+  index: -1
+obj/table
+  rotate: false
+  xy: 646, 669
+  size: 256, 179
+  orig: 256, 179
+  offset: 0, 0
+  index: -1
+obj/tree_0
+  rotate: false
+  xy: 1678, 1712
+  size: 256, 333
+  orig: 256, 333
+  offset: 0, 0
+  index: -1
+obj/tree_1
+  rotate: false
+  xy: 1678, 1375
+  size: 256, 333
+  orig: 256, 333
+  offset: 0, 0
+  index: -1
+obj/tree_2
+  rotate: false
+  xy: 646, 1448
+  size: 256, 333
+  orig: 256, 333
+  offset: 0, 0
+  index: -1
+obj/workshop
+  rotate: false
+  xy: 906, 1068
+  size: 640, 589
+  orig: 640, 589
+  offset: 0, 0
+  index: -1
+obj/workshop_front
+  rotate: false
+  xy: 2, 586
+  size: 640, 589
+  orig: 640, 589
+  offset: 0, 0
+  index: -1
+ui/bar_bg
+  rotate: false
+  xy: 1938, 217
+  size: 48, 28
+  orig: 48, 28
+  offset: 0, 0
+  index: -1
+ui/bar_energy
+  rotate: false
+  xy: 1990, 217
+  size: 48, 28
+  orig: 48, 28
+  offset: 0, 0
+  index: -1
+ui/bar_green
+  rotate: false
+  xy: 1462, 6
+  size: 48, 28
+  orig: 48, 28
+  offset: 0, 0
+  index: -1
+ui/bar_water
+  rotate: false
+  xy: 906, 853
+  size: 48, 28
+  orig: 48, 28
+  offset: 0, 0
+  index: -1
+ui/bar_xp
+  rotate: false
+  xy: 958, 853
+  size: 48, 28
+  orig: 48, 28
+  offset: 0, 0
+  index: -1
+ui/btn_blue
+  rotate: false
+  xy: 1550, 1377
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/dark
+  rotate: false
+  xy: 518, 86
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/knob
+  rotate: false
+  xy: 1650, 1545
+  size: 16, 48
+  orig: 16, 48
+  offset: 0, 0
+  index: -1
+ui/logo
+  rotate: false
+  xy: 2, 1785
+  size: 900, 260
+  orig: 900, 260
+  offset: 0, 0
+  index: -1
+ui/pill
+  rotate: false
+  xy: 186, 15
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+ui/tab_off
+  rotate: false
+  xy: 286, 15
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+ui/tab_on
+  rotate: false
+  xy: 386, 15
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+ui/white
+  rotate: false
+  xy: 2038, 2037
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+
+game2.png
+size: 2048, 2048
+format: RGBA8888
+filter: MipMapLinearLinear, Linear
+repeat: none
+animal/cow_0
+  rotate: false
+  xy: 1622, 1703
+  size: 224, 176
+  orig: 224, 176
+  offset: 0, 0
+  index: -1
+animal/cow_1
+  rotate: false
+  xy: 1362, 1620
+  size: 224, 176
+  orig: 224, 176
+  offset: 0, 0
+  index: -1
+animal/cow_2
+  rotate: false
+  xy: 1590, 1523
+  size: 224, 176
+  orig: 224, 176
+  offset: 0, 0
+  index: -1
+animal/cow_3
+  rotate: false
+  xy: 842, 1607
+  size: 224, 176
+  orig: 224, 176
+  offset: 0, 0
+  index: -1
+animal/sheep_0
+  rotate: false
+  xy: 1070, 1639
+  size: 176, 144
+  orig: 176, 144
+  offset: 0, 0
+  index: -1
+animal/sheep_1
+  rotate: false
+  xy: 1070, 1491
+  size: 176, 144
+  orig: 176, 144
+  offset: 0, 0
+  index: -1
+animal/sheep_2
+  rotate: false
+  xy: 842, 1459
+  size: 176, 144
+  orig: 176, 144
+  offset: 0, 0
+  index: -1
+animal/sheep_3
+  rotate: false
+  xy: 1350, 1472
+  size: 176, 144
+  orig: 176, 144
+  offset: 0, 0
+  index: -1
+char/farmer_down_0
+  rotate: false
+  xy: 398, 20
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_down_1
+  rotate: false
+  xy: 522, 200
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_down_2
+  rotate: false
+  xy: 690, 1423
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_down_3
+  rotate: false
+  xy: 530, 20
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_side_0
+  rotate: false
+  xy: 654, 200
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_side_1
+  rotate: false
+  xy: 662, 20
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_side_2
+  rotate: false
+  xy: 786, 200
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_side_3
+  rotate: false
+  xy: 890, 1279
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_up_0
+  rotate: false
+  xy: 890, 1099
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_up_1
+  rotate: false
+  xy: 1022, 974
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_up_2
+  rotate: false
+  xy: 890, 919
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/farmer_up_3
+  rotate: false
+  xy: 1022, 794
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+char/leyla
+  rotate: false
+  xy: 1650, 4
+  size: 128, 150
+  orig: 128, 150
+  offset: 0, 0
+  index: -1
+char/nargiz
+  rotate: false
+  xy: 754, 912
+  size: 128, 150
+  orig: 128, 150
+  offset: 0, 0
+  index: -1
+char/orkhan
+  rotate: false
+  xy: 754, 758
+  size: 128, 150
+  orig: 128, 150
+  offset: 0, 0
+  index: -1
+char/tural
+  rotate: false
+  xy: 390, 604
+  size: 128, 150
+  orig: 128, 150
+  offset: 0, 0
+  index: -1
+crop/carrot_0
+  rotate: false
+  xy: 1650, 698
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/carrot_1
+  rotate: false
+  xy: 1518, 685
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/carrot_2
+  rotate: false
+  xy: 1914, 740
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/carrot_3
+  rotate: false
+  xy: 1782, 646
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/clover_0
+  rotate: false
+  xy: 1650, 518
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/radish_0
+  rotate: false
+  xy: 1650, 518
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/clover_1
+  rotate: false
+  xy: 1914, 560
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/clover_2
+  rotate: false
+  xy: 1782, 466
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/clover_3
+  rotate: false
+  xy: 1914, 380
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/corn_0
+  rotate: false
+  xy: 1794, 1192
+  size: 128, 224
+  orig: 128, 224
+  offset: 0, 0
+  index: -1
+crop/corn_1
+  rotate: false
+  xy: 1662, 1061
+  size: 128, 224
+  orig: 128, 224
+  offset: 0, 0
+  index: -1
+crop/corn_2
+  rotate: false
+  xy: 1518, 1048
+  size: 128, 224
+  orig: 128, 224
+  offset: 0, 0
+  index: -1
+crop/corn_3
+  rotate: false
+  xy: 1286, 1010
+  size: 128, 224
+  orig: 128, 224
+  offset: 0, 0
+  index: -1
+crop/corn_regrow
+  rotate: false
+  xy: 1154, 973
+  size: 128, 224
+  orig: 128, 224
+  offset: 0, 0
+  index: -1
+crop/dead
+  rotate: false
+  xy: 390, 200
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/lettuce_0
+  rotate: false
+  xy: 890, 739
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/lettuce_1
+  rotate: false
+  xy: 1154, 793
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/lettuce_2
+  rotate: false
+  xy: 1022, 614
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/lettuce_3
+  rotate: false
+  xy: 890, 559
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/potato_0
+  rotate: false
+  xy: 1286, 647
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/potato_1
+  rotate: false
+  xy: 1154, 613
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/potato_2
+  rotate: false
+  xy: 1022, 434
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/potato_3
+  rotate: false
+  xy: 1518, 505
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/pumpkin_0
+  rotate: false
+  xy: 1650, 338
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/pumpkin_1
+  rotate: false
+  xy: 1782, 286
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/pumpkin_2
+  rotate: false
+  xy: 1286, 467
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/pumpkin_3
+  rotate: false
+  xy: 1154, 433
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/radish_1
+  rotate: false
+  xy: 1022, 254
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/radish_2
+  rotate: false
+  xy: 1518, 325
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/radish_3
+  rotate: false
+  xy: 1650, 158
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/strawberry_0
+  rotate: false
+  xy: 1286, 287
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/tomato_0
+  rotate: false
+  xy: 1286, 287
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/strawberry_1
+  rotate: false
+  xy: 1154, 253
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/strawberry_2
+  rotate: false
+  xy: 1286, 107
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/strawberry_3
+  rotate: false
+  xy: 1518, 145
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/strawberry_regrow
+  rotate: false
+  xy: 1914, 200
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/tomato_1
+  rotate: false
+  xy: 1782, 106
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/tomato_2
+  rotate: false
+  xy: 1914, 20
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/tomato_3
+  rotate: false
+  xy: 794, 2
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/tomato_regrow
+  rotate: false
+  xy: 926, 2
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/wheat_0
+  rotate: false
+  xy: 490, 1423
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/wheat_1
+  rotate: false
+  xy: 490, 1243
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/wheat_2
+  rotate: false
+  xy: 622, 1243
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+crop/wheat_3
+  rotate: false
+  xy: 754, 1243
+  size: 128, 176
+  orig: 128, 176
+  offset: 0, 0
+  index: -1
+fx/butterfly_1
+  rotate: false
+  xy: 1530, 1576
+  size: 48, 40
+  orig: 48, 40
+  offset: 0, 0
+  index: -1
+fx/light
+  rotate: false
+  xy: 842, 1787
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+icon/egg
+  rotate: false
+  xy: 1250, 1687
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/energy
+  rotate: false
+  xy: 1250, 1587
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/fertilizer
+  rotate: false
+  xy: 1250, 1487
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/fried_egg
+  rotate: false
+  xy: 1418, 1372
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/globe
+  rotate: false
+  xy: 1418, 1272
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/grain
+  rotate: false
+  xy: 1418, 1172
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/hand
+  rotate: false
+  xy: 1418, 1072
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/hay
+  rotate: false
+  xy: 1418, 972
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/heart
+  rotate: false
+  xy: 1926, 1220
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/hoe
+  rotate: false
+  xy: 1926, 1120
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/home
+  rotate: false
+  xy: 1418, 872
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/info
+  rotate: false
+  xy: 1418, 772
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/lettuce
+  rotate: false
+  xy: 1926, 1020
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/lettuce_seeds
+  rotate: false
+  xy: 1926, 920
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/lock
+  rotate: false
+  xy: 1418, 672
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/machine_cheese_press
+  rotate: false
+  xy: 1418, 572
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/machine_loom
+  rotate: false
+  xy: 1418, 472
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/machine_mill
+  rotate: false
+  xy: 1418, 372
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/menu
+  rotate: false
+  xy: 1418, 272
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/milk
+  rotate: false
+  xy: 1418, 172
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/minus
+  rotate: false
+  xy: 1418, 72
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/music
+  rotate: false
+  xy: 918, 282
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/orders
+  rotate: false
+  xy: 918, 182
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/pancakes
+  rotate: false
+  xy: 1782, 6
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/pin
+  rotate: false
+  xy: 1258, 7
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/play
+  rotate: false
+  xy: 390, 1503
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/plus
+  rotate: false
+  xy: 390, 1403
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/potato
+  rotate: false
+  xy: 390, 1303
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/potato_seeds
+  rotate: false
+  xy: 390, 1203
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/pumpkin
+  rotate: false
+  xy: 390, 1103
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/pumpkin_seeds
+  rotate: false
+  xy: 390, 1003
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/pumpkin_soup
+  rotate: false
+  xy: 522, 903
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/queue
+  rotate: false
+  xy: 522, 803
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/radish
+  rotate: false
+  xy: 522, 703
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/radish_seeds
+  rotate: false
+  xy: 522, 603
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+obj/bench
+  rotate: false
+  xy: 1622, 1883
+  size: 256, 160
+  orig: 256, 160
+  offset: 0, 0
+  index: -1
+obj/bush_0
+  rotate: false
+  xy: 1882, 1902
+  size: 160, 141
+  orig: 160, 141
+  offset: 0, 0
+  index: -1
+obj/bush_1
+  rotate: false
+  xy: 1882, 1757
+  size: 160, 141
+  orig: 160, 141
+  offset: 0, 0
+  index: -1
+obj/clover_tray_2
+  rotate: false
+  xy: 2, 17
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/coop
+  rotate: false
+  xy: 2, 200
+  size: 384, 448
+  orig: 384, 448
+  offset: 0, 0
+  index: -1
+obj/fence_h
+  rotate: false
+  xy: 890, 382
+  size: 128, 173
+  orig: 128, 173
+  offset: 0, 0
+  index: -1
+obj/fence_post
+  rotate: false
+  xy: 754, 1066
+  size: 128, 173
+  orig: 128, 173
+  offset: 0, 0
+  index: -1
+obj/fence_v
+  rotate: false
+  xy: 490, 1066
+  size: 128, 173
+  orig: 128, 173
+  offset: 0, 0
+  index: -1
+obj/flowers_0
+  rotate: false
+  xy: 390, 871
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/flowers_1
+  rotate: false
+  xy: 622, 770
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/flowers_2
+  rotate: false
+  xy: 622, 638
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/gate
+  rotate: false
+  xy: 622, 1066
+  size: 128, 173
+  orig: 128, 173
+  offset: 0, 0
+  index: -1
+obj/hay_rack_0
+  rotate: false
+  xy: 134, 17
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/hay_rack_1
+  rotate: false
+  xy: 266, 17
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/hay_rack_2
+  rotate: false
+  xy: 1286, 827
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/hopper_0
+  rotate: false
+  xy: 1794, 1009
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/hopper_1
+  rotate: false
+  xy: 1650, 878
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/hopper_2
+  rotate: false
+  xy: 1518, 865
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/lamp
+  rotate: false
+  xy: 1022, 1154
+  size: 128, 333
+  orig: 128, 333
+  offset: 0, 0
+  index: -1
+obj/lock_sign
+  rotate: false
+  xy: 1782, 826
+  size: 128, 179
+  orig: 128, 179
+  offset: 0, 0
+  index: -1
+obj/mill_sails
+  rotate: false
+  xy: 398, 1603
+  size: 440, 440
+  orig: 440, 440
+  offset: 0, 0
+  index: -1
+obj/pad
+  rotate: false
+  xy: 622, 902
+  size: 128, 160
+  orig: 128, 160
+  offset: 0, 0
+  index: -1
+obj/pine
+  rotate: false
+  xy: 1850, 1420
+  size: 192, 333
+  orig: 192, 333
+  offset: 0, 0
+  index: -1
+obj/plant
+  rotate: false
+  xy: 1662, 1289
+  size: 128, 230
+  orig: 128, 230
+  offset: 0, 0
+  index: -1
+obj/rock_0
+  rotate: false
+  xy: 390, 758
+  size: 128, 109
+  orig: 128, 109
+  offset: 0, 0
+  index: -1
+obj/shelf
+  rotate: false
+  xy: 1154, 1201
+  size: 128, 282
+  orig: 128, 282
+  offset: 0, 0
+  index: -1
+obj/stall_produce_front
+  rotate: false
+  xy: 2, 1582
+  size: 384, 461
+  orig: 384, 461
+  offset: 0, 0
+  index: -1
+obj/stall_seeds
+  rotate: false
+  xy: 2, 1117
+  size: 384, 461
+  orig: 384, 461
+  offset: 0, 0
+  index: -1
+obj/stall_seeds_front
+  rotate: false
+  xy: 2, 652
+  size: 384, 461
+  orig: 384, 461
+  offset: 0, 0
+  index: -1
+obj/stove
+  rotate: false
+  xy: 1362, 1800
+  size: 256, 243
+  orig: 256, 243
+  offset: 0, 0
+  index: -1
+obj/tv
+  rotate: false
+  xy: 1530, 1276
+  size: 128, 243
+  orig: 128, 243
+  offset: 0, 0
+  index: -1
+obj/well
+  rotate: false
+  xy: 1286, 1238
+  size: 128, 230
+  orig: 128, 230
+  offset: 0, 0
+  index: -1
+terrain/floor_0
+  rotate: false
+  xy: 1518, 13
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/floor_1
+  rotate: false
+  xy: 1058, 121
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/grass_0
+  rotate: false
+  xy: 754, 626
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/grass_1
+  rotate: false
+  xy: 622, 506
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/grass_2
+  rotate: false
+  xy: 490, 471
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/grass_3
+  rotate: false
+  xy: 754, 494
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ui/badge
+  rotate: false
+  xy: 1022, 1563
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+ui/btn_blue_down
+  rotate: false
+  xy: 390, 382
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_cream
+  rotate: false
+  xy: 490, 382
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_cream_down
+  rotate: false
+  xy: 590, 382
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_green
+  rotate: false
+  xy: 690, 382
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_green_down
+  rotate: false
+  xy: 790, 382
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_grey
+  rotate: false
+  xy: 390, 475
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/header
+  rotate: false
+  xy: 1926, 1320
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/panel
+  rotate: false
+  xy: 1058, 7
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/panel_inset
+  rotate: false
+  xy: 1158, 7
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/vignette
+  rotate: false
+  xy: 1102, 1787
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+
+game3.png
+size: 2048, 1024
+format: RGBA8888
+filter: MipMapLinearLinear, Linear
+repeat: none
+fx/marker
+  rotate: false
+  xy: 2, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+fx/ripple
+  rotate: false
+  xy: 266, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+icon/rain
+  rotate: false
+  xy: 2, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/salad
+  rotate: false
+  xy: 366, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/save
+  rotate: false
+  xy: 466, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/seed
+  rotate: false
+  xy: 566, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/sound_off
+  rotate: false
+  xy: 866, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/sound_on
+  rotate: false
+  xy: 966, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/star_gold
+  rotate: false
+  xy: 1454, 662
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/star_silver
+  rotate: false
+  xy: 1586, 794
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/strawberry
+  rotate: false
+  xy: 1718, 926
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/strawberry_seeds
+  rotate: false
+  xy: 1190, 279
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/sun
+  rotate: false
+  xy: 1322, 417
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/tomato
+  rotate: false
+  xy: 1058, 134
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/tomato_seeds
+  rotate: false
+  xy: 1454, 562
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/upgrade_barn
+  rotate: false
+  xy: 1818, 926
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/upgrade_coop
+  rotate: false
+  xy: 1918, 926
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/upgrade_field
+  rotate: false
+  xy: 1066, 34
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/veggie_stew
+  rotate: false
+  xy: 1422, 378
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/water
+  rotate: false
+  xy: 1290, 233
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/wheat
+  rotate: false
+  xy: 1554, 610
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/wheat_seeds
+  rotate: false
+  xy: 1554, 510
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/wool
+  rotate: false
+  xy: 1686, 794
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/xp
+  rotate: false
+  xy: 1686, 694
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+icon/zzz
+  rotate: false
+  xy: 1786, 826
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+obj/rock_1
+  rotate: false
+  xy: 1322, 517
+  size: 128, 109
+  orig: 128, 109
+  offset: 0, 0
+  index: -1
+obj/stake
+  rotate: false
+  xy: 1190, 379
+  size: 128, 115
+  orig: 128, 115
+  offset: 0, 0
+  index: -1
+obj/tilled
+  rotate: false
+  xy: 530, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/tilled_wet
+  rotate: false
+  xy: 662, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/tuft_0
+  rotate: false
+  xy: 794, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/tuft_1
+  rotate: false
+  xy: 926, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/wall_face
+  rotate: false
+  xy: 1058, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/wall_top
+  rotate: false
+  xy: 1190, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obj/window
+  rotate: false
+  xy: 1058, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_1
+  rotate: false
+  xy: 2, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_10
+  rotate: false
+  xy: 2, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_11
+  rotate: false
+  xy: 134, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_12
+  rotate: false
+  xy: 266, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_13
+  rotate: false
+  xy: 398, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_14
+  rotate: false
+  xy: 530, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_15
+  rotate: false
+  xy: 2, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_15b
+  rotate: false
+  xy: 134, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_2
+  rotate: false
+  xy: 134, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_3
+  rotate: false
+  xy: 2, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_4
+  rotate: false
+  xy: 134, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_5
+  rotate: false
+  xy: 266, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_6
+  rotate: false
+  xy: 2, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_7
+  rotate: false
+  xy: 134, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_8
+  rotate: false
+  xy: 266, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/path_9
+  rotate: false
+  xy: 398, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_1
+  rotate: false
+  xy: 398, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_10
+  rotate: false
+  xy: 794, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_11
+  rotate: false
+  xy: 134, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_12
+  rotate: false
+  xy: 266, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_13
+  rotate: false
+  xy: 398, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_14
+  rotate: false
+  xy: 530, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_15
+  rotate: false
+  xy: 662, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_15b
+  rotate: false
+  xy: 794, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_2
+  rotate: false
+  xy: 530, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_3
+  rotate: false
+  xy: 662, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_4
+  rotate: false
+  xy: 2, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_5
+  rotate: false
+  xy: 134, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_6
+  rotate: false
+  xy: 266, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_7
+  rotate: false
+  xy: 398, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_8
+  rotate: false
+  xy: 530, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/soil_9
+  rotate: false
+  xy: 662, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_1
+  rotate: false
+  xy: 926, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_10
+  rotate: false
+  xy: 530, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_11
+  rotate: false
+  xy: 662, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_12
+  rotate: false
+  xy: 794, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_13
+  rotate: false
+  xy: 926, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_14
+  rotate: false
+  xy: 1058, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_15
+  rotate: false
+  xy: 1190, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_15b
+  rotate: false
+  xy: 1190, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_2
+  rotate: false
+  xy: 266, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_3
+  rotate: false
+  xy: 398, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_4
+  rotate: false
+  xy: 530, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_5
+  rotate: false
+  xy: 662, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_6
+  rotate: false
+  xy: 794, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_7
+  rotate: false
+  xy: 926, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_8
+  rotate: false
+  xy: 1058, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/stone_9
+  rotate: false
+  xy: 398, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_1
+  rotate: false
+  xy: 1322, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_10
+  rotate: false
+  xy: 926, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_11
+  rotate: false
+  xy: 1058, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_12
+  rotate: false
+  xy: 1190, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_13
+  rotate: false
+  xy: 1322, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_14
+  rotate: false
+  xy: 1454, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_15
+  rotate: false
+  xy: 1586, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_15b
+  rotate: false
+  xy: 926, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_2
+  rotate: false
+  xy: 662, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_3
+  rotate: false
+  xy: 794, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_4
+  rotate: false
+  xy: 926, 366
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_5
+  rotate: false
+  xy: 1058, 498
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_6
+  rotate: false
+  xy: 1190, 630
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_7
+  rotate: false
+  xy: 1322, 762
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_8
+  rotate: false
+  xy: 1454, 894
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+terrain/water_9
+  rotate: false
+  xy: 794, 102
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ui/btn_grey_down
+  rotate: false
+  xy: 1190, 195
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_orange
+  rotate: false
+  xy: 1454, 478
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_orange_down
+  rotate: false
+  xy: 1322, 333
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_red
+  rotate: false
+  xy: 1290, 149
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/btn_red_down
+  rotate: false
+  xy: 1586, 710
+  size: 96, 80
+  orig: 96, 80
+  offset: 0, 0
+  index: -1
+ui/round
+  rotate: false
+  xy: 102, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/round_down
+  rotate: false
+  xy: 266, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/slot
+  rotate: false
+  xy: 666, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+ui/slot_sel
+  rotate: false
+  xy: 766, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
