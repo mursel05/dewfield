@@ -1,7 +1,8 @@
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 
+// No version here: the root build script puts AGP on the classpath (see its buildscript block).
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
 }
 
 val gdxVersion = libs.versions.gdx.get()
