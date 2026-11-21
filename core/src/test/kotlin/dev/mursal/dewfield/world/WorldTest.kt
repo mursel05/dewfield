@@ -158,12 +158,12 @@ class WorldTest {
     @Test
     fun `tapping a plot walks over and tills it`() {
         val w = world()
-        val cell = Cell(12, 18)
-        w.tap(12.5f, 18.5f)
+        val cell = Cell(7, 12)
+        w.tap(7.5f, 12.5f)
         assertEquals(PlotAction.TILL, w.plotAction(cell))
         w.run()
         assertTrue(w.farm.plot(cell)!!.tilled)
-        assertTrue(hypot(w.player.x - 12.5f, w.player.y - 18.5f) < 1.6f, "farmer stands next to the plot")
+        assertTrue(hypot(w.player.x - 7.5f, w.player.y - 12.5f) < 1.6f, "farmer stands next to the plot")
         assertEquals(Farm.MAX_ENERGY - Farm.COST_TILL, w.state.energy)
     }
 
@@ -172,24 +172,24 @@ class WorldTest {
     @Test
     fun `dragging across plots queues them all and tapping a queued plot removes it`() {
         val w = world()
-        for (x in 11..16) w.paint(x + 0.5f, 20.5f)
+        for (y in 9..14) w.paint(6.5f, y + 0.5f)
         assertEquals(6, w.queuedPlots().size)
-        w.tap(16.5f, 20.5f)
+        w.tap(6.5f, 14.5f)
         assertEquals(5, w.queuedPlots().size)
         w.run(60f)
-        for (x in 11..15) assertTrue(w.farm.plot(Cell(x, 20))!!.tilled, "x=$x")
-        assertFalse(w.farm.plot(Cell(16, 20))!!.tilled)
+        for (y in 9..13) assertTrue(w.farm.plot(Cell(6, y))!!.tilled, "y=$y")
+        assertFalse(w.farm.plot(Cell(6, 14))!!.tilled)
     }
 
     @Test
     fun `planting also waters, and an empty can sends the farmer to the well`() {
         val w = world()
-        val a = Cell(11, 17)
-        val b = Cell(12, 17)
+        val a = Cell(6, 9)
+        val b = Cell(7, 9)
         w.farm.till(a)
         w.farm.till(b)
         w.farm.select("radish_seeds")
-        w.tap(11.5f, 17.5f)
+        w.tap(6.5f, 9.5f)
         w.run()
         val pa = w.farm.plot(a)!!
         assertEquals("radish", pa.crop)
@@ -197,7 +197,7 @@ class WorldTest {
 
         w.farm.plant(b, "radish_seeds")
         w.state.canWater = 0
-        w.tap(12.5f, 17.5f)
+        w.tap(7.5f, 9.5f)
         w.run(60f)
         assertTrue(w.farm.plot(b)!!.watered, "watered after the well trip")
         assertEquals(w.farm.canCapacity - 1, w.state.canWater)
@@ -207,11 +207,11 @@ class WorldTest {
     @Test
     fun `tapping a growing crop shows info without walking`() {
         val w = world()
-        val c = Cell(13, 19)
+        val c = Cell(8, 11)
         w.farm.till(c)
         w.farm.plant(c, "radish_seeds")
         w.farm.water(c)
-        w.tap(13.5f, 19.5f)
+        w.tap(8.5f, 11.5f)
         assertNull(w.current)
         assertTrue(w.queue.isEmpty())
         val toast = w.drain().filterIsInstance<WorldEvent.Toast>().single()
@@ -221,14 +221,14 @@ class WorldTest {
     @Test
     fun `locked field blocks explain how to unlock`() {
         val w = world()
-        w.tap(19.5f, 18.5f)
+        w.tap(12.5f, 12.5f)
         assertEquals("msg.field_locked_hint", (w.drain().single() as WorldEvent.Toast).msg.key)
     }
 
     @Test
     fun `walking to the road exit travels to the market`() {
         val w = world()
-        w.tap(39.5f, 10.5f)
+        w.tap(21.5f, 16.5f)
         w.run(60f)
         val travel = w.drain().filterIsInstance<WorldEvent.Travel>().single()
         assertEquals(WorldEvent.Travel(Locations.MARKET, "farm_road"), travel)
@@ -237,28 +237,34 @@ class WorldTest {
     @Test
     fun `the house door, bed and market stalls open the right things`() {
         val w = world()
-        w.tap(4.5f, 19.5f) // house wall/roof area
+        w.tap(4.5f, 20.5f) // house wall/roof area
         w.run()
         assertEquals(WorldEvent.Travel(Locations.HOUSE, "door"), w.drain().filterIsInstance<WorldEvent.Travel>().single())
 
         w.enter(Locations.HOUSE, "door")
-        w.tap(1.5f, 5.5f)
+        w.tap(1.5f, 11.5f)
         w.run()
         assertTrue(w.drain().contains(WorldEvent.Open(Panel.SLEEP)))
+        w.tap(5.5f, 12.5f)
+        w.run()
+        assertTrue(w.drain().contains(WorldEvent.Open(Panel.TV)))
+        w.tap(6.5f, 8.5f)
+        w.run()
+        assertTrue(w.drain().contains(WorldEvent.Open(Panel.COOK)))
 
         w.enter(Locations.MARKET, "farm_road")
         w.state.minutes = 6.5 * 60
-        w.tap(4.5f, 13.5f)
+        w.tap(3.5f, 24.5f)
         w.run()
         assertTrue(w.drain().any { it is WorldEvent.Toast && it.msg.key == "msg.market_closed" })
         w.state.minutes = 10.0 * 60
-        w.tap(4.5f, 13.5f)
+        w.tap(3.5f, 24.5f)
         w.run()
         assertTrue(w.drain().contains(WorldEvent.Open(Panel.SHOP_SEEDS)))
-        w.tap(16.5f, 13.5f)
+        w.tap(11.5f, 24.5f)
         w.run()
         assertTrue(w.drain().contains(WorldEvent.Open(Panel.SELL)))
-        w.tap(5.5f, 4.5f)
+        w.tap(9.5f, 7.5f)
         w.run()
         assertTrue(w.drain().contains(WorldEvent.Open(Panel.ORDERS, "board")))
     }
@@ -266,12 +272,12 @@ class WorldTest {
     @Test
     fun `filling the hopper and collecting eggs at the coop`() {
         val w = world()
-        w.tap(33.5f, 17.5f)
+        w.tap(12.5f, 35.5f)
         w.run()
         assertEquals(14, w.farm.trough("hopper"), "4 already in + 10 grain from the bag")
         assertEquals(0, w.farm.count("grain"))
         w.farm.basket(Housing.COOP)["egg#1"] = 2
-        w.tap(27.5f, 19.5f)
+        w.tap(6.5f, 37.5f)
         w.run()
         assertEquals(2, w.farm.count("egg#1"))
         val float = w.drain().filterIsInstance<WorldEvent.Float>().single()
@@ -293,7 +299,7 @@ class WorldTest {
     @Test
     fun `machines that are not bought say where to get them`() {
         val w = world()
-        w.tap(20.5f, 6.5f)
+        w.tap(19.5f, 27.5f)
         w.run()
         val t = w.drain().filterIsInstance<WorldEvent.Toast>().single()
         assertEquals(Msg("msg.machine_not_owned", Msg.machine("cheese_press")), t.msg)
@@ -303,20 +309,20 @@ class WorldTest {
     fun `running out of energy stops the queue`() {
         val w = world()
         w.state.energy = 4
-        for (x in 11..14) w.paint(x + 0.5f, 19.5f)
+        for (x in 6..9) w.paint(x + 0.5f, 10.5f)
         w.run(60f)
-        assertEquals(1, (11..14).count { w.farm.plot(Cell(it, 19))!!.tilled })
+        assertEquals(1, (6..9).count { w.farm.plot(Cell(it, 10))!!.tilled })
         assertTrue(w.queue.isEmpty())
     }
 
     @Test
     fun `saved position is restored when valid`() {
         val w = world()
-        w.player.x = 30.5f
-        w.player.y = 12.5f
+        w.player.x = 18.5f
+        w.player.y = 22.5f
         w.storePosition()
         w.enter(Locations.FARM, null, useSaved = true)
-        assertEquals(30.5f, w.player.x)
+        assertEquals(18.5f, w.player.x)
         w.state.playerX = 2.5f
         w.state.playerY = 19.5f // inside the house walls
         w.enter(Locations.FARM, "house_door", useSaved = true)

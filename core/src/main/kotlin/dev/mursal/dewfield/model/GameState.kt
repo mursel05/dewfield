@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
  * Everything that is saved. Plain mutable data; all rules live in [Farm].
  * Bump [SAVE_VERSION] and migrate in [SaveCodec] when the shape changes incompatibly.
  */
-const val SAVE_VERSION = 2
+const val SAVE_VERSION = 3
 
 @Serializable
 data class Cell(val x: Int, val y: Int) {

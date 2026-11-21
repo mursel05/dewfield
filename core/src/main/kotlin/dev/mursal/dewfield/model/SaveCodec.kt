@@ -17,15 +17,38 @@ object SaveCodec {
 
     fun encode(state: GameState): String = json.encodeToString(GameState.serializer(), state)
 
-    fun decode(text: String, field: FieldLayout): GameState? {
+    /**
+     * Reads a save for the current [field]. [fieldV2] is the field layout of version 2 saves,
+     * used to move their plots onto the current field; without it old plots are dropped.
+     */
+    fun decode(text: String, field: FieldLayout, fieldV2: FieldLayout? = null): GameState? {
         val s = try {
             json.decodeFromString(GameState.serializer(), text)
         } catch (e: Exception) {
             return null
         }
         if (s.version > SAVE_VERSION || s.version < 2) return null
+        if (s.version < 3) migrateV2(s, field, fieldV2)
+        s.version = SAVE_VERSION
         repair(s, field)
         return s
+    }
+
+    /**
+     * Version 3 turned the maps for portrait play. Each plot moves to the cell with the same
+     * index in the same block of the new field, so crops survive, and the saved standing spot
+     * is dropped because it points into the old map.
+     */
+    private fun migrateV2(s: GameState, field: FieldLayout, fieldV2: FieldLayout?) {
+        if (fieldV2 != null) {
+            val moved = HashMap<Cell, Cell>()
+            fieldV2.blocks.zip(field.blocks).forEach { (from, to) -> from.zip(to).forEach { (a, b) -> moved[a] = b } }
+            val plots = s.plots.mapNotNull { p -> moved[p.cell]?.let { p.copy(x = it.x, y = it.y) } }
+            s.plots.clear()
+            s.plots += plots
+        }
+        s.playerX = Float.NaN
+        s.playerY = Float.NaN
     }
 
     private fun repair(s: GameState, field: FieldLayout) {

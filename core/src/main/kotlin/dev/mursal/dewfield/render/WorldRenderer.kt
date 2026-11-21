@@ -203,24 +203,35 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
         }
     }
 
+    /**
+     * Lights hang off the objects that cast them (the offsets match the windows and lamps in each
+     * sprite), so moving a building on the map moves its glow with it.
+     */
     private fun buildLights(loc: Location) {
         val warm = Color(1f, 0.82f, 0.52f, 1f)
+        fun each(kind: ObjKind, add: (WorldObject) -> Unit) = loc.objects.filter { it.kind == kind }.forEach(add)
         when (loc.id) {
             Locations.FARM -> {
-                lights += Light(3.22f, 19.73f, 2.6f, warm, NIGHT)
-                lights += Light(5.78f, 19.73f, 2.6f, warm, NIGHT)
-                lights += Light(4.5f, 18.4f, 2.2f, warm, NIGHT)
-                lights += Light(23.81f, 7.1f, 2f, warm, NIGHT)
-                lights += Light(26.19f, 7.1f, 2f, warm, NIGHT)
-                lights += Light(7.5f, 14.4f, 1.6f, warm, NIGHT)
+                each(ObjKind.HOUSE) { o ->
+                    lights += Light(o.x + 1.22f, o.y + 1.73f, 2.6f, warm, NIGHT)
+                    lights += Light(o.x + 3.78f, o.y + 1.73f, 2.6f, warm, NIGHT)
+                    lights += Light(o.x + 2.5f, o.y + 0.4f, 2.2f, warm, NIGHT)
+                }
+                each(ObjKind.BARN) { o ->
+                    lights += Light(o.x + 0.81f, o.y + 2.1f, 2f, warm, NIGHT)
+                    lights += Light(o.x + 3.19f, o.y + 2.1f, 2f, warm, NIGHT)
+                }
+                each(ObjKind.MILL) { o -> lights += Light(o.x + 1.5f, o.y + 2.4f, 1.6f, warm, NIGHT) }
             }
             Locations.MARKET -> loc.objects.filter { it.arg == "lamp" }.forEach { lights += Light(it.x + 0.5f, it.y + 2.12f, 5f, warm, NIGHT) }
             Locations.HOUSE -> {
-                lights += Light(6f, 4.6f, 9f, Color(1f, 0.86f, 0.62f, 1f), NIGHT)
-                lights += Light(6.5f, 6.9f, 2.6f, Color(0.55f, 0.75f, 1f, 1f), TV)
-                lights += Light(10f, 6.7f, 2.4f, warm, NIGHT)
-                lights += Light(3.5f, 7f, 3.2f, Color(1f, 0.98f, 0.9f, 1f), DAY)
-                lights += Light(8.5f, 7f, 3.2f, Color(1f, 0.98f, 0.9f, 1f), DAY)
+                // A ceiling lamp over the bed corner and one over the living room.
+                val room = Color(1f, 0.86f, 0.62f, 1f)
+                lights += Light(loc.width * 0.35f, loc.height * 0.72f, 6.5f, room, NIGHT)
+                lights += Light(loc.width * 0.5f, loc.height * 0.32f, 8.5f, room, NIGHT)
+                each(ObjKind.TV) { o -> lights += Light(o.x + 0.5f, o.y + 0.9f, 2.6f, Color(0.55f, 0.75f, 1f, 1f), TV) }
+                each(ObjKind.STOVE) { o -> lights += Light(o.x + o.w / 2f, o.y + 0.7f, 2.4f, warm, NIGHT) }
+                loc.objects.filter { it.arg == "window" }.forEach { lights += Light(it.x + 0.5f, it.y.toFloat(), 3.2f, Color(1f, 0.98f, 0.9f, 1f), DAY) }
             }
         }
     }

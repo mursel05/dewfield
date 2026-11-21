@@ -10,8 +10,9 @@ import dev.mursal.dewfield.model.SaveCodec
 /**
  * One save slot in app-private storage. Writes go to a temp file that then replaces the
  * save, and the previous save is kept as a backup, so a crash mid-write never loses the farm.
+ * [fieldV2] is the field of version 2 saves, so their crops move onto the current [field].
  */
-class SaveStore(private val field: FieldLayout) {
+class SaveStore(private val field: FieldLayout, private val fieldV2: FieldLayout? = null) {
     /**
      * App-private storage on Android. The desktop build runs with assets/ as its working
      * directory, so it saves under the user's home instead of next to the game's assets.
@@ -29,7 +30,7 @@ class SaveStore(private val field: FieldLayout) {
     fun load(): GameState? {
         for (f in listOf(main, backup)) {
             if (!f.exists()) continue
-            val state = runCatching { SaveCodec.decode(f.readString("UTF-8"), field) }.getOrNull()
+            val state = runCatching { SaveCodec.decode(f.readString("UTF-8"), field, fieldV2) }.getOrNull()
             if (state != null) return state
             Gdx.app.error(TAG, "Unreadable save ${f.name()}, trying the next one")
         }

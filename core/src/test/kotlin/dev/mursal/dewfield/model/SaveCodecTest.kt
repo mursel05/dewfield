@@ -64,4 +64,25 @@ class SaveCodecTest {
         val farm = Farm(s, TEST_FIELD)
         assertTrue(farm.till(Cell(0, 0)).ok)
     }
+
+    @Test
+    fun `version 2 saves move their plots onto the new field and forget the old standing spot`() {
+        val old = FieldLayout(listOf(listOf(Cell(20, 20), Cell(21, 20)), listOf(Cell(30, 20), Cell(31, 20))))
+        val f = Farm.newGame(7L, old)
+        f.till(Cell(21, 20))
+        f.plant(Cell(21, 20), "radish_seeds")
+        f.state.version = 2
+        f.state.playerX = 25.5f
+        f.state.playerY = 20.5f
+        val newField = FieldLayout(listOf(listOf(Cell(0, 0), Cell(0, 1)), listOf(Cell(5, 0), Cell(5, 1))))
+
+        val s = assertNotNull(SaveCodec.decode(SaveCodec.encode(f.state), newField, old))
+        assertEquals(SAVE_VERSION, s.version)
+        assertEquals(newField.allCells.toSet(), s.plots.map { it.cell }.toSet())
+        val moved = s.plots.single { it.cell == Cell(0, 1) }
+        assertTrue(moved.tilled)
+        assertEquals("radish", moved.crop)
+        assertTrue(s.plots.filter { it.cell != Cell(0, 1) }.none { it.tilled })
+        assertTrue(s.playerX.isNaN() && s.playerY.isNaN())
+    }
 }
