@@ -420,6 +420,16 @@ class FarmTest {
     }
 
     @Test
+    fun `each order on the board comes from a different client`() {
+        val f = newFarm()
+        repeat(40) {
+            val clients = f.state.orders.map { it.client }
+            assertEquals(clients.size, clients.toSet().size, "day ${f.state.day}: $clients")
+            f.sleep()
+        }
+    }
+
+    @Test
     fun `xp raises the level and reports what unlocked`() {
         val f = newFarm()
         f.addXp(ItemDb.levelXp[1])

@@ -21,6 +21,8 @@ sealed interface WorldEvent {
     data class Sound(val id: String) : WorldEvent
     data class Open(val panel: Panel, val arg: String = "") : WorldEvent
     data class Travel(val to: String, val spawn: String) : WorldEvent
+    /** A visual effect at a world point (dirt, water drops, leaves, sparkles, hearts). */
+    data class Fx(val kind: String, val x: kotlin.Float, val y: kotlin.Float) : WorldEvent
 }
 
 enum class PlotAction(val queueable: Boolean, val tool: String) {
@@ -209,6 +211,20 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
         if (location.inBounds(cell) && location.walkable(cell)) {
             replaceWith(Task.Move(cell))
         }
+    }
+
+    /** A long press: explains what is under the finger without walking there. */
+    fun inspect(wx: Float, wy: Float) {
+        val cell = Cell(floor(wx).toInt(), floor(wy).toInt())
+        animalAt(wx, wy)?.let { a ->
+            farm.animalById(a.id)?.let { toast(animalStatus(it)) }
+            return
+        }
+        if (farm.plot(cell) != null && location.id == Locations.FARM) {
+            if (!farm.isPlotUnlocked(cell)) toast(Msg("msg.field_locked_hint")) else plotInfo(cell)
+            return
+        }
+        location.objectHit(wx, wy)?.let { o -> toast(Msg("about.${o.id.trimEnd('1', '2', '3', '4')}")) }
     }
 
     /** True if a drag starting here paints plot tasks. */
@@ -414,6 +430,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
         when (result) {
             is Outcome.Ok -> {
                 animate(action.tool)
+                events += WorldEvent.Fx(action.name.lowercase(), cell.x + 0.5f, cell.y + 0.45f)
                 result.gains.forEach { events += WorldEvent.Float(fx, fy, it) }
             }
             is Outcome.Fail -> {
@@ -474,6 +491,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
                 if (r is Outcome.Ok) {
                     animate("can")
                     sound("water")
+                    events += WorldEvent.Fx("water", o.centerX, o.y + 0.3f)
                     events += WorldEvent.Float(farmX, farmY, Gain("water", state.canWater))
                     waterRetry = null
                 } else if (r is Outcome.Fail) toast(r.msg)
@@ -487,6 +505,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
                     is Outcome.Ok -> {
                         animate("hand")
                         sound("pop")
+                        events += WorldEvent.Fx("pop", o.centerX, o.y + 0.4f)
                         r.msg?.let { toast(it) }
                     }
                     is Outcome.Fail -> {
@@ -524,7 +543,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
             animate("hand")
             sound("pet_${a.kind}")
             a.happy = 0.6f
-            events += WorldEvent.Float(a.x, a.y + 1f, Gain("heart", 1))
+            events += WorldEvent.Fx("heart", a.x, a.y + if (a.kind == "chicken") 0.8f else 1.3f)
         }
         toast(animalStatus(s))
     }

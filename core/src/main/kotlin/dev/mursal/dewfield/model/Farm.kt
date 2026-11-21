@@ -589,7 +589,8 @@ class Farm(val state: GameState, val field: FieldLayout) {
         val reward = ((value * (1.5f + rng.nextFloat() * 0.4f)) / 5f).roundToInt() * 5
         return Order(
             id = state.nextOrderId++,
-            client = ItemDb.orderClients[rng.nextInt(ItemDb.orderClients.size)],
+            // Each client posts one order at a time.
+            client = (ItemDb.orderClients - state.orders.map { it.client }.toSet()).ifEmpty { ItemDb.orderClients }.let { it[rng.nextInt(it.size)] },
             lines = lines,
             reward = reward,
             xp = 10 + value / 30,
