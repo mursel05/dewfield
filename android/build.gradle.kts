@@ -8,7 +8,7 @@ plugins {
 val gdxVersion = libs.versions.gdx.get()
 val abis = listOf("armeabi-v7a", "arm64-v8a", "x86_64")
 
-val natives: Configuration by configurations.creating
+val natives: Configuration = configurations.create("natives")
 
 android {
     namespace = "dev.mursal.dewfield"
