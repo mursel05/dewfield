@@ -1,0 +1,30 @@
+# Gradle / build
+.gradle/
+build/
+**/build/
+.kotlin/
+local.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Android signing (never commit keys)
+*.keystore
+*.jks
+keystore.properties
+
+# Art pipeline intermediates
+tools/art/out/
+tools/art/node_modules/
+
+# Claude Code personal files
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Env
+.env
+.env.*
+!.env.example
