@@ -19,7 +19,7 @@ It runs on every push to `main`, on every pull request, and by hand.
 1. Bump `versionCode` and `versionName` in `android/build.gradle.kts`, and the version label in `TitleScreen`.
 2. Commit, then tag and push:
    ```bash
-   git tag v0.2.0 && git push origin v0.2.0
+   git tag v0.3.0 && git push origin v0.3.0
    ```
 3. The workflow builds the release APK and publishes a GitHub release with the APK attached and generated notes.
 

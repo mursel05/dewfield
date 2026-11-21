@@ -5,7 +5,7 @@
 <h1 align="center">Dewfield</h1>
 
 <p align="center">
-  A cozy farm life game for Android, played in landscape: walk with a tap, grow crops, raise animals,<br>
+  A cozy farm life game for Android, played in portrait with one hand: walk with a tap, grow crops, raise animals,<br>
   trade at the market and sleep to start a new day.
 </p>
 
@@ -16,13 +16,10 @@
   <img src="https://img.shields.io/badge/languages-English%20%7C%20Az%C9%99rbaycan-f0a020" alt="English and Azerbaijani">
 </p>
 
-![The farm in the morning](docs/screenshots/farm.jpg)
-
-| | |
-| --- | --- |
-| ![Animals in their pen](docs/screenshots/animals.jpg) | ![The farm at night](docs/screenshots/night.jpg) |
-| ![The market square](docs/screenshots/market.jpg) | ![Selling at the market](docs/screenshots/selling.jpg) |
-| ![The seed shop](docs/screenshots/seed-shop.jpg) | ![The seed shop in Azerbaijani](docs/screenshots/seed-shop-az.jpg) |
+| | | | |
+| --- | --- | --- | --- |
+| ![The farm in the morning](docs/screenshots/farm.jpg) | ![Animals in their pens](docs/screenshots/animals.jpg) | ![The farm at night](docs/screenshots/night.jpg) | ![Inside the house](docs/screenshots/house.jpg) |
+| ![The market square](docs/screenshots/market.jpg) | ![The seed shop](docs/screenshots/seed-shop.jpg) | ![Selling at the market](docs/screenshots/selling.jpg) | ![The seed shop in Azerbaijani](docs/screenshots/seed-shop-az.jpg) |
 
 ## Features
 

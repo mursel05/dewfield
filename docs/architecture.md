@@ -52,9 +52,13 @@ Dewfield is a single libGDX application, `DewfieldGame`. Two thin launchers star
   - base tiles, then dual-grid terrain layers (water, soil, path, stone);
   - plots, then y-sorted sprites (props, objects, crops, animals, player, vendors);
   - overlays, then particles.
+- `CameraRig` measures the view in tiles across the screen's short side (10.5 outdoors, the room width indoors). Screens squatter than 9:16 keep a 9:16 phone's rows and see extra width.
 - `Lighting` renders a half-resolution light map, cleared to the time-of-day ambient colour with lights added, and multiplies it over the scene.
-- The UI is scene2d on a 1280x720 `ExtendViewport`:
-  - `Hud` holds the clock, coins, energy, level, seed bar and buttons.
+- The UI is scene2d on a 720x1280 portrait `ExtendViewport` (see ADR 0003):
+  - The stage is always at least 720 wide and 1280 tall: tall phones get a taller stage, tablets a wider one.
+  - `Ui.safe` (a `SafeArea`) holds the notch and cutout insets in stage units. The HUD, panels and title keep their controls inside it.
+  - `Hud` holds the clock, coins, energy and level pills at the top left, round buttons at the top right, and the can, task queue and a sideways-scrolling seed bar at the bottom, within thumb reach.
+  - Panels are 700 wide. Lists and shops take the full height (`Modal.FILL`) and stack the list over a fixed-height detail pane (`ListDetail`). Short panels are as tall as their content (`Modal.FIT`).
   - `Modal` is the base class for every panel. `ModalHost` dims the world and shows one panel at a time, queueing the rest.
   - The HUD fades out while a panel is open, because panels show the coins themselves.
 
@@ -63,6 +67,7 @@ Dewfield is a single libGDX application, `DewfieldGame`. Two thin launchers star
 - `Strings` loads `assets/i18n/strings_<lang>.properties` and falls back to English for missing keys.
 - `Audio` plays the synthesized `.ogg` effects with slight pitch jitter and crossfades the day and night music.
 - `SaveStore` writes the save atomically (temp file, then rename) and keeps the previous save as a backup.
+- `SaveCodec` migrates old saves. Version 3 moved the field to portrait: version 2 plots are moved block by block onto `Locations.FIELD`.
 - `Settings` stores the language, sound and music choices in libGDX `Preferences`.
 
 ## Frame order

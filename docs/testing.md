@@ -17,8 +17,8 @@ Rules take a seed, so tests are deterministic. Use `newFarm()` in `FarmTest` and
 ## Screenshot tour (visual check)
 
 ```bash
-xvfb-run -a -s "-screen 0 1600x720x24" ./gradlew :desktop:run -q \
-  --args="--tour $PWD/build/tour --size 1600x720"
+xvfb-run -a -s "-screen 0 720x1600x24" ./gradlew :desktop:run -q \
+  --args="--tour $PWD/build/tour --size 720x1600"
 ```
 
 - `desktop/.../Tour.kt` drives a fixed farm (seed 1234) through 25 scenes:
@@ -27,7 +27,8 @@ xvfb-run -a -s "-screen 0 1600x720x24" ./gradlew :desktop:run -q \
   - sunset, night and rain
   - three screens in Azerbaijani
 - It writes PNGs. Check them after any UI, art or rendering change.
-- Other aspect ratios are worth a look too: `--size 1280x960` (4:3 tablet) and `--size 2400x1080` (20:9 phone).
+- The game is portrait. Check the other ends of the range too: `--size 720x1280` (9:16 phone) and `--size 960x1280` (3:4 tablet).
+  Match the xvfb screen size to `--size`.
 
 ## Android
 
@@ -35,7 +36,7 @@ CI builds the release APK and runs an emulator smoke test (`.github/scripts/smok
 
 1. Installs the APK on an API 34 x86_64 emulator and launches it.
 2. Fails if the process dies or logcat shows a fatal exception.
-3. Taps into the game, waits, and checks again.
+3. Taps "New farm" (its position is worked out from the portrait screen size), waits, and checks again.
 4. Uploads screenshots as artifacts.
 
 Before a release, also play on a real phone: tap-to-move, drag-to-plant, pinch zoom, Back button, pause/resume, and a save after the app is killed.

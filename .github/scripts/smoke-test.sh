@@ -36,13 +36,20 @@ adb exec-out screencap -p > "$OUT/1-title.png"
 alive || fail "The app is not running after start"
 crashed && fail "Crash on start"
 
-# Landscape size: the larger dimension is the width. On a fresh install the title shows one big
-# "New farm" button centred at 56.5% of the height (see TitleScreen.build), which starts a farm.
+# Portrait size: the smaller dimension is the width. On a fresh install the title shows one big
+# "New farm" button whose centre sits 230 UI units above the bottom edge (see TitleScreen.build).
+# The UI is a 720x1280 ExtendViewport, so a unit is w/720 pixels on phones taller than 9:16 and
+# h/1280 on squatter screens.
 size=$(adb shell wm size | sed -n 's/.*: \([0-9]*\)x\([0-9]*\).*/\1 \2/p' | tail -n 1)
 read -r a b <<< "$size"
-w=$(( a > b ? a : b ))
-h=$(( a > b ? b : a ))
-adb shell input tap $(( w / 2 )) $(( h * 565 / 1000 ))
+w=$(( a < b ? a : b ))
+h=$(( a < b ? b : a ))
+if (( h * 720 >= w * 1280 )); then
+  new_farm_y=$(( h - 230 * w / 720 ))
+else
+  new_farm_y=$(( h - 230 * h / 1280 ))
+fi
+adb shell input tap $(( w / 2 )) "$new_farm_y"
 sleep 15
 adb exec-out screencap -p > "$OUT/2-game.png"
 alive || fail "The app died after entering the game"

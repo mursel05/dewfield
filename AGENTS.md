@@ -5,7 +5,7 @@ Read this before changing code. `CLAUDE.md` imports this file.
 
 ## What this is
 
-Dewfield is an original, cozy farm life game for Android, played in landscape:
+Dewfield is an original, cozy farm life game for Android, played in portrait:
 
 - Walk with taps.
 - Till, plant, water and harvest.
@@ -22,7 +22,7 @@ It is written in Kotlin on libGDX. The art is soft vector, never pixel art, and 
 | Unit tests (rules, world, strings) | `./gradlew :core:test` |
 | Compile everything but Android | `./gradlew :core:compileKotlin :desktop:compileKotlin` |
 | Run on desktop | `./gradlew :desktop:run` |
-| Screenshot tour (25 PNGs) | `./gradlew :desktop:run --args="--tour /abs/out/dir --size 1600x720"` (headless: prefix `xvfb-run -a -s "-screen 0 1600x720x24"`) |
+| Screenshot tour (25 PNGs) | `./gradlew :desktop:run --args="--tour /abs/out/dir --size 720x1600"` (headless: prefix `xvfb-run -a -s "-screen 0 720x1600x24"`) |
 | Regenerate strings | `python3 tools/i18n/strings.py` |
 | Regenerate sounds and music | `python3 tools/audio/synth.py` (needs numpy and ffmpeg with libvorbis) |
 | Regenerate art atlas | `node tools/art/build.js` then `./gradlew :tools:packAtlas` (needs Node and Playwright, see `docs/conventions.md`) |
@@ -59,7 +59,9 @@ docs/      architecture, game design, conventions, testing, deployment, ADRs
 - **Panels rebuild, they don't patch.**
   - A `Modal` refills its body in `fill()` after every action, so the numbers are always current.
   - List and detail panels keep their scroll position with `ListDetail`.
-- **World units are tiles.** 1 unit = 1 tile and y points up. The UI uses a 1280x720 `ExtendViewport`, so a layout must work from 4:3 up to 21:9.
+- **World units are tiles.** 1 unit = 1 tile and y points up. Maps are taller than wide, for a portrait screen.
+- **The UI is portrait.** It uses a 720x1280 `ExtendViewport`, so a layout must work from 3:4 (tablet) to 9:21 (tall phone).
+  Keep controls inside `ui.safe` (notches and cutouts) and the main actions within thumb reach at the bottom.
 - **Saves are versioned JSON.** They go through `SaveCodec`, are written atomically and keep a backup. When you add state, give it a default value so old saves still load.
 
 ## Conventions

@@ -11,7 +11,7 @@ The desktop build drives a fixed farm (seed 1234) through 25 scripted scenes and
 
 ```bash
 OUT="$PWD/build/tour" && rm -rf "$OUT" && mkdir -p "$OUT"
-xvfb-run -a -s "-screen 0 1600x720x24" ./gradlew :desktop:run -q --args="--tour $OUT --size 1600x720"
+xvfb-run -a -s "-screen 0 720x1600x24" ./gradlew :desktop:run -q --args="--tour $OUT --size 720x1600"
 ```
 
 - On a machine with a display, drop the `xvfb-run …` prefix.

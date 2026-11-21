@@ -27,7 +27,9 @@
 - Build UIs with the widget kit in `Ui` and `PanelKit`: `button`, `roundButton`, `card`, `tab`, `item`, `info`, `stepper`, `detailHeader`, `lines` and `scroll`.
 - Detail panes follow one pattern: a fixed header, then scrolling info lines (`ui.lines()` inside `ui.scroll`), then action buttons pinned at the bottom.
 - Tables inside a growing cell must call `left()`, or their content centers.
-- **Sizes** are in the 1280x720 virtual UI:
+- **Sizes** are in the 720x1280 portrait virtual UI. Lay panels out in one column: stack panes, don't put them side by side.
+  - A layout must work from 3:4 (a 960x1280 stage) to 9:21 (720x1680).
+  - Keep controls inside `ui.safe`, and keep the main actions in the lower half of the screen.
   - Touch targets are at least 52 px.
   - List rows are about 80 px.
   - Primary buttons are 64–68 px tall.

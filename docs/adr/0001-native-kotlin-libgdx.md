@@ -2,6 +2,7 @@
 
 - **Status:** accepted (2026-11-21)
 - **Supersedes:** the Godot 4 prototype (v0.1)
+- **Amended by:** ADR 0003 (the game is portrait, not landscape)
 
 ## Context
 

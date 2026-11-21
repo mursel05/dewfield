@@ -102,6 +102,18 @@ The total XP needed for levels 1 to 10 is 0, 60, 180, 400, 750, 1250, 2000, 3000
 | Pancakes | egg, milk, wheat | 75 |
 | Pumpkin soup | pumpkin, milk | 100 |
 
+## World
+
+The game is played in portrait, so every map is taller than it is wide.
+
+- **Farm (22x42):**
+  - The coop and chicken pen are at the top, and the barn with its pen below them.
+  - The house and mill are in the middle. The road to the market leaves on the right.
+  - The four field blocks are at the bottom, two by two, with the well beside them. Each block is 4 plots wide and 6 tall.
+  - Blocks unlock top-left, top-right, bottom-left, bottom-right.
+- **Market (16x30):** three stalls along the top (seeds, feed and animals, buyer), Tural's workshop in the middle, the fountain and the order board below. The road home is on the left.
+- **House (10x15):** the bed, shelf and TV in a nook at the top, the stove under its own wall on the right, and the living room above the door.
+
 ## Start
 
 The player starts with:
