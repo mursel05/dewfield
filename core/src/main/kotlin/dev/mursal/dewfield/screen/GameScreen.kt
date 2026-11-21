@@ -78,6 +78,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     private var started = false
     private var toastsOverPanel: Boolean? = null
     private var hintGap = 0f
+    private var stepClock = 0f
 
     init {
         val spawn = if (fresh) "bed" else null
@@ -145,6 +146,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
         drainWorldEvents()
         drainFarmEvents()
         rig.follow(world.player.x, world.player.y, dt, world.player.moving)
+        footsteps(dt)
         renderer.update(dt, rig.left, rig.bottom, rig.right, rig.top)
         hud.update(dt)
         val panel = modals.isOpen
@@ -368,6 +370,19 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
         ui.audio.ambient(if (farm.state.weather == Weather.RAIN && !world.location.indoor) "rain" else null)
     }
 
+    /** Soft footsteps in time with the walk cycle (two steps per cycle at 9 frames a second). */
+    private fun footsteps(dt: Float) {
+        if (!world.player.moving || busy) {
+            stepClock = STEP_SECONDS * 0.6f
+            return
+        }
+        stepClock += dt
+        if (stepClock >= STEP_SECONDS) {
+            stepClock -= STEP_SECONDS
+            ui.audio.play("step", if (world.location.indoor) 0.35f else 0.45f, 0.12f)
+        }
+    }
+
     /**
      * One-time tips for new players, keyed in the save so they show once per farm. Tips that wait
      * for a situation are spaced out so the player never gets a wall of text; [now] skips the wait
@@ -488,6 +503,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     companion object {
         private const val AUTOSAVE_SECONDS = 45f
         private const val HINT_GAP_SECONDS = 7f
+        private const val STEP_SECONDS = 2f / 9f
         private val OUTDOOR_BG = Color.valueOf("4f8a3a")
         private val INDOOR_BG = Color.valueOf("2b2118")
     }
