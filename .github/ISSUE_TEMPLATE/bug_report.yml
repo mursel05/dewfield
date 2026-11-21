@@ -1,0 +1,44 @@
+name: Bug report
+description: Something doesn't work or looks wrong
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you see, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to the market
+        2. Open Leyla's stall
+        3. Sell all carrots
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Game version
+      description: Shown on the title screen
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: "Samsung Galaxy A54, Android 15"
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options: [English, Azərbaycan]
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots or recording
+      description: Drag files here

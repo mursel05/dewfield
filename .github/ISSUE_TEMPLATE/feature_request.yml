@@ -1,0 +1,23 @@
+name: Idea or feature
+description: Suggest new content, a feature or a balance change
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What should be added or changed?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What would it make better for the player?
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Numbers, sketches, examples. For new crops or animals, prices and timings help.

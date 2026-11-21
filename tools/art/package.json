@@ -1,0 +1,11 @@
+{
+  "name": "dewfield-art",
+  "private": true,
+  "description": "Renders Dewfield's vector sprites (SVG built in src/*.js) to PNG for the texture atlas.",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

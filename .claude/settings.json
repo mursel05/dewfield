@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :core:test:*)",
+      "Bash(./gradlew :core:compileKotlin:*)",
+      "Bash(./gradlew :desktop:compileKotlin:*)",
+      "Bash(./gradlew :desktop:run:*)",
+      "Bash(./gradlew :tools:packAtlas:*)",
+      "Bash(python3 tools/i18n/strings.py)",
+      "Bash(python3 tools/audio/synth.py:*)",
+      "Bash(node tools/art/build.js:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Read(./**/*.keystore)",
+      "Read(./**/*.jks)",
+      "Read(./keystore.properties)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/regen-strings.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
