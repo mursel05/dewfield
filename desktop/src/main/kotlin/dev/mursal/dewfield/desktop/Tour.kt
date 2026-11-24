@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.PixmapIO
 import dev.mursal.dewfield.DewfieldGame
 import dev.mursal.dewfield.Director
+import dev.mursal.dewfield.app.Notice
+import dev.mursal.dewfield.app.Notifier
 import dev.mursal.dewfield.i18n.Lang
 import dev.mursal.dewfield.model.AnimalState
 import dev.mursal.dewfield.model.Farm
@@ -13,6 +15,8 @@ import dev.mursal.dewfield.model.MachineState
 import dev.mursal.dewfield.model.Weather
 import dev.mursal.dewfield.screen.GameScreen
 import dev.mursal.dewfield.ui.BagPanel
+import dev.mursal.dewfield.ui.GiftPanel
+import dev.mursal.dewfield.ui.KeepsakePanel
 import dev.mursal.dewfield.world.Locations
 import dev.mursal.dewfield.world.Panel
 import java.io.File
@@ -42,6 +46,8 @@ class Tour(private val out: File) : Director {
         game.settings.lang = Lang.EN
         game.settings.sound = false
         game.settings.music = false
+        game.settings.reminders = true
+        game.settings.remindersAsked = false
         game.reloadStrings()
         script()
     }
@@ -143,6 +149,51 @@ class Tour(private val out: File) : Director {
             g.play().farm.addXp(600)
         }
         shot("25_levelup_az")
+        // Pastimes: the daily gift, the wishing fountain and the keepsake shelf, then the bench,
+        // the night sky and the rainbow.
+        step(30) { g ->
+            g.play().closeAll()
+            g.play().open(GiftPanel(g.play()))
+        }
+        shot("26_gift_az")
+        panel(Panel.WISH, "27_wish_az")
+        panel(Panel.SHELF, "28_shelf_az")
+        step(40) { g ->
+            g.play().closeAll()
+            g.settings.lang = Lang.EN
+            g.play().relabel()
+            g.play().closeAll()
+            g.play().farm.state.minutes = 18 * 60 + 40.0
+            g.play().world.player.apply { x = 9.5f; y = 12.5f }
+            g.play().world.tap(12.2f, 11.4f)
+        }
+        step(150) {}
+        shot("29_bench_sunset")
+        step(25) { g ->
+            g.play().farm.state.minutes = 22 * 60.0
+            g.play().shootingStar()
+        }
+        shot("30_night_star")
+        step(100) { g ->
+            val s = g.play().farm.state
+            s.minutes = 8 * 60 + 30.0
+            s.weather = Weather.SUNNY
+            s.leisure.rainbowDay = s.day
+            s.leisure.rainbowTakenDay = 0
+            g.play().warp(Locations.FARM, "house_door")
+            g.play().world.player.apply { x = 10.5f; y = 14.5f }
+        }
+        shot("31_rainbow")
+        step(30) { g -> g.play().open(KeepsakePanel(g.play(), "star_shard", shelfDone = false)) }
+        shot("32_keepsake")
+        var gift: GiftPanel? = null
+        step(30) { g ->
+            g.play().closeAll()
+            gift = GiftPanel(g.play()).also { g.play().open(it) }
+        }
+        shot("33_gift")
+        step(30) { gift?.claim() }
+        shot("34_gift_opened")
         step(5) { g -> g.play().closeAll() }
     }
 
@@ -167,6 +218,15 @@ class Tour(private val out: File) : Director {
         pm.dispose()
         flipped.dispose()
         shots++
+    }
+
+    /** Notifications that are always allowed and never posted, so reminder UI can be screenshotted. */
+    object PreviewNotifier : Notifier {
+        override val available = true
+        override fun allowed() = true
+        override fun requestPermission(done: (Boolean) -> Unit) = done(true)
+        override fun schedule(notices: List<Notice>) = Unit
+        override fun cancelAll() = Unit
     }
 
     /** A farm a few days in: crops at every stage, all three animals, goods to sell. */
@@ -207,6 +267,7 @@ class Tour(private val out: File) : Director {
         s.machines.getValue("mill").queue += dev.mursal.dewfield.model.MachineJob("mill_wheat")
         s.machines.getValue("mill").ready["hay"] = 5
         s.hotItem = "carrot"
+        s.leisure.keepsakes += listOf("horseshoe", "pocket_watch", "four_leaf")
         return f
     }
 }

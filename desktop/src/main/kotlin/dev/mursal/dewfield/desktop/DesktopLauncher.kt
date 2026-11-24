@@ -3,6 +3,7 @@ package dev.mursal.dewfield.desktop
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import dev.mursal.dewfield.DewfieldGame
+import dev.mursal.dewfield.app.Notifier
 import java.io.File
 
 /**
@@ -27,5 +28,6 @@ fun main(args: Array<String>) {
         setForegroundFPS(60)
         setPreferencesConfig(".dewfield", com.badlogic.gdx.Files.FileType.External)
     }
-    Lwjgl3Application(DewfieldGame(tour?.let { Tour(it) }), config)
+    // The tour pretends the platform has notifications so the reminder switches show up in the shots.
+    Lwjgl3Application(DewfieldGame(tour?.let { Tour(it) }, if (tour != null) Tour.PreviewNotifier else Notifier.None), config)
 }
