@@ -375,12 +375,39 @@ def sfx_step(rng):
     return finish(x, 0.22)
 
 
+def sfx_chime(rng):
+    """A little magic: a rising run of soft bells with a sparkle on top (wishes, stars, finds)."""
+    out = np.zeros(n_of(1.4))
+    for i, m in enumerate((79, 84, 88, 91, 96)):
+        place(out, bell(hz(m), 0.9, 0.28), n_of(i * 0.07), 0.55 - i * 0.04)
+    for _ in range(12):
+        f = rng.uniform(4200, 7500)
+        place(out, osc("sine", f, 0.07) * decay(n_of(0.07), 0.018), n_of(rng.uniform(0.2, 0.8)), 0.07)
+    out = reverb(out, impulse(1.3, 1.1, rng), 0.4)
+    return finish(out, 0.5)
+
+
+def sfx_splash(rng):
+    """A coin into the fountain: a bright plink, then a small splash and a few bubbles."""
+    out = np.zeros(n_of(0.8))
+    place(out, bell(hz(96), 0.18, 0.04), 0, 0.35)
+    d = 0.35
+    splash = bandpass(noise(d, rng), 400, 3800) * adsr(n_of(d), 0.006, 0.06, 0.25, 0.22)
+    place(out, splash, n_of(0.09), 0.55)
+    for _ in range(7):
+        f0 = rng.uniform(380, 750)
+        bub = osc("sine", glide([(0, f0), (1, f0 * 2.4)], 0.04), 0.04) * decay(n_of(0.04), 0.014)
+        place(out, bub, n_of(rng.uniform(0.14, 0.6)), rng.uniform(0.2, 0.45))
+    out = reverb(out, impulse(0.6, 0.5, rng), 0.25)
+    return finish(out, 0.5)
+
+
 SFX = {
     "click": sfx_click, "tick": sfx_tick, "open": sfx_open, "close": sfx_close, "error": sfx_error,
     "coin": sfx_coin, "till": sfx_till, "plant": sfx_plant, "water": sfx_water, "harvest": sfx_harvest,
     "pop": sfx_pop, "door": sfx_door, "pet_chicken": sfx_pet_chicken, "pet_cow": sfx_pet_cow,
     "pet_sheep": sfx_pet_sheep, "levelup": sfx_levelup, "sleep": sfx_sleep, "rooster": sfx_rooster,
-    "cook": sfx_cook, "step": sfx_step,
+    "cook": sfx_cook, "step": sfx_step, "chime": sfx_chime, "splash": sfx_splash,
 }
 
 

@@ -670,6 +670,20 @@ const fx = {
   drop: () => S.svg(24, 32, path('M12,0 Q24,18 12,32 Q0,18 12,0 Z', '#bfe8ff')),
   clod: () => S.svg(24, 24, circle(12, 12, 10, '#8a5a34')),
   leaf: () => S.svg(32, 24, path('M2,12 Q16,-4 30,12 Q16,28 2,12 Z', '#7cc45f')),
+  // A shooting star flying right: a bright head with a tapering tail (the game rotates it).
+  shooting_star: () => S.svg(256, 48,
+    path('M0,24 L222,16 Q236,24 222,32 Z', 'url(#ss)') + circle(228, 24, 18, 'url(#sg)') +
+    path('M228,10 Q230,22 242,24 Q230,26 228,38 Q226,26 214,24 Q226,22 228,10 Z', '#ffffff'),
+    S.linear('ss', [[0, '#fff3c4', 0], [0.75, '#fff3c4', 0.5], [1, '#ffffff', 0.95]], 0, 0, 1, 0) +
+    S.radial('sg', [[0, '#ffffff', 1], [0.45, '#fff1b0', 0.75], [1, '#ffe08a', 0]])),
+  // The rainbow over the farm the morning after rain: six soft bands, outer radius 250 and inner 178
+  // around the middle of the bottom edge (ui/Sky.kt taps against these), fading out towards the ground.
+  rainbow: () => S.svg(512, 256,
+    g(['#f2837a', '#f7b267', '#f6dd73', '#9fd67f', '#79b8ea', '#ab8fdc']
+      .map((c, i) => path(`M${256 - (244 - i * 12)},256 A${244 - i * 12},${244 - i * 12} 0 0 1 ${256 + (244 - i * 12)},256`, 'none', { stroke: c, strokeWidth: 12.5 }))
+      .join(''), { mask: 'url(#rbm)' }),
+    S.linear('rbf', [[0, '#ffffff', 1], [0.55, '#ffffff', 1], [1, '#ffffff', 0]]) +
+    '<mask id="rbm" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="256"><rect width="512" height="256" fill="url(#rbf)"/></mask>'),
 };
 
 module.exports = function objects() {
