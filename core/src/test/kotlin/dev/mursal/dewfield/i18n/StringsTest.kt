@@ -3,8 +3,11 @@ package dev.mursal.dewfield.i18n
 import dev.mursal.dewfield.gfx.Fonts
 import dev.mursal.dewfield.model.Category
 import dev.mursal.dewfield.model.ItemDb
+import dev.mursal.dewfield.model.KeepsakeSource
+import dev.mursal.dewfield.model.Leisure
 import dev.mursal.dewfield.model.Msg
 import dev.mursal.dewfield.model.Weather
+import dev.mursal.dewfield.model.Wish
 import dev.mursal.dewfield.ui.TvPanel
 import dev.mursal.dewfield.world.Locations
 import dev.mursal.dewfield.world.ObjKind
@@ -32,7 +35,7 @@ class StringsTest {
 
     @Test
     fun `every key the code uses exists`() {
-        val literal = Regex(""""((?:msg|ui|hud|shop|bag|cook|orders|machine|morning|level|pause|stats|title|tv|sleep|hint|sign)\.[a-z0-9_.]+)"""")
+        val literal = Regex(""""((?:msg|ui|hud|shop|bag|cook|orders|machine|morning|level|pause|stats|title|tv|sleep|hint|sign|gift|wish|rest|star|rainbow|sparkle|easter|shelf|keepsake|notify)\.[a-z0-9_.]+)"""")
         val used = File("src/main/kotlin").walkTopDown().filter { it.extension == "kt" }
             .flatMap { f -> literal.findAll(f.readText()).map { it.groupValues[1] } }
             .filterNot { it.endsWith(".") }
@@ -57,6 +60,10 @@ class StringsTest {
             listOf("coop", "barn").forEach { add("building.$it") }
             Locations.ALL.forEach { add("loc.$it") }
             (0 until TvPanel.TIPS).forEach { add("tip.$it") }
+            ItemDb.keepsakes.forEach { add("keepsake.${it.id}"); add("keepsake.${it.id}.story") }
+            KeepsakeSource.entries.forEach { add("shelf.hint.${it.name.lowercase()}") }
+            Wish.entries.forEach { add("wish.${it.name.lowercase()}"); add("wish.${it.name.lowercase()}.sub") }
+            (0 until Leisure.MISS_LINES).forEach { add("wish.miss.$it") }
             Locations.ALL.map { Locations.create(it) }.flatMap { it.objects }.filter { it.kind != ObjKind.DECOR }
                 .forEach { add("about.${it.id.trimEnd('1', '2', '3', '4')}") }
         }

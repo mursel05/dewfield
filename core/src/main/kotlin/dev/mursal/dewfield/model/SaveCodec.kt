@@ -109,5 +109,14 @@ object SaveCodec {
 
         val canCap = ItemDb.upgrade(ItemDb.UPGRADE_CAN).levels[s.upgrades.getValue(ItemDb.UPGRADE_CAN) - 1].value
         s.canWater = s.canWater.coerceIn(0, canCap)
+
+        val l = s.leisure
+        val keepsakes = l.keepsakes.filter { id -> ItemDb.keepsakes.any { it.id == id } }.distinct()
+        l.keepsakes.clear()
+        l.keepsakes += keepsakes
+        l.wishesToday = l.wishesToday.coerceIn(0, ItemDb.WISHES_PER_DAY)
+        l.restedToday = l.restedToday.coerceIn(0, ItemDb.REST_CAP)
+        s.gift.claimed = s.gift.claimed.coerceAtLeast(0)
+        s.gift.lastGameDay = s.gift.lastGameDay.coerceIn(0, s.day)
     }
 }

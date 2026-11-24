@@ -106,6 +106,63 @@ const ui = {
   pin: () => path('M48,88 Q20,52 20,36 Q20,10 48,10 Q76,10 76,36 Q76,52 48,88 Z', '#e2493b', st('#b2382c', 3)) + circle(48, 36, 11, '#ffffff'),
   queue: () => [24, 48, 72].map((y, i) => circle(20, y, 7, '#ffffff') + line(36, y, 78, y, '#ffffff', 8)).join(''),
   zzz: () => path('M18,26 H44 L18,52 H44 M52,48 H72 L52,68 H72', 'none', { stroke: '#ffffff', strokeWidth: 7, strokeLinecap: 'round', strokeLinejoin: 'round' }),
+  // Pastimes: the daily gift, reminders, the fountain and the sky.
+  gift: () => rect(16, 44, 64, 42, '#e2574c', { rx: 6, ...st('#e2574c') }) + rect(11, 30, 74, 18, '#ef6b5e', { rx: 6, ...st('#e2574c') }) +
+    rect(42, 30, 12, 56, '#ffd23f') + path('M48,30 Q26,4 18,18 Q14,30 48,30 Z', '#ffd23f', st('#e0a92a', 3)) +
+    path('M48,30 Q70,4 78,18 Q82,30 48,30 Z', '#ffd23f', st('#e0a92a', 3)) + circle(48, 30, 6, '#f6b733', st('#e0a92a', 2)),
+  bell: () => path('M48,14 Q24,14 24,46 V60 L14,72 H82 L72,60 V46 Q72,14 48,14 Z', '#ffd23f', st('#e0a92a', 4)) +
+    circle(48, 80, 8, '#e0a92a') + circle(48, 12, 5, '#e0a92a') +
+    path('M34,34 Q36,24 44,22', 'none', { stroke: '#fff3b0', strokeWidth: 5, strokeLinecap: 'round' }),
+  fountain: () => path('M48,36 Q40,10 22,40 M48,36 Q56,10 74,40', 'none', { stroke: '#7cc6ee', strokeWidth: 5, strokeLinecap: 'round' }) +
+    circle(48, 16, 6, '#bfe6fb') + rect(42, 36, 12, 28, '#c8ced6', st('#c8ced6', 2.5)) + ellipse(48, 37, 14, 5, '#c8ced6', st('#c8ced6', 2.5)) +
+    path('M8,62 H88 Q86,88 48,88 Q10,88 8,62 Z', '#c8ced6', st('#c8ced6', 3)) + ellipse(48, 62, 40, 10, '#d9dee4', st('#c8ced6', 3)) +
+    ellipse(48, 63, 33, 6, '#62b6e0') + ellipse(38, 61, 10, 2.5, '#bfe6fb'),
+  rainbow: () => ['#f06a5e', '#f7a94b', '#f6d55c', '#7cc45f', '#5fa8e0', '#9a7bd0']
+    .map((c, i) => path(`M${12 + i * 6},70 A${36 - i * 6},${36 - i * 6} 0 0 1 ${84 - i * 6},70`, 'none', { stroke: c, strokeWidth: 6.5 })).join('') +
+    cloud('#ffffff').replace('<path', `<path transform="translate(-2,30) scale(0.42)"`) +
+    cloud('#ffffff').replace('<path', `<path transform="translate(58,30) scale(0.42)"`),
+};
+
+// Keepsakes: little finds for the shelf at home.
+const keepsakeIcons = {
+  horseshoe: () => path('M28,20 V48 Q28,80 48,80 Q68,80 68,48 V20', 'none', { stroke: '#7d858d', strokeWidth: 18, strokeLinecap: 'round' }) +
+    path('M28,20 V48 Q28,80 48,80 Q68,80 68,48 V20', 'none', { stroke: '#b3bbc3', strokeWidth: 10, strokeLinecap: 'round' }) +
+    [[28, 30], [28, 50], [36, 70], [68, 30], [68, 50], [60, 70]].map(([x, y]) => circle(x, y, 2.6, '#5d646b')).join(''),
+  marble: () => circle(48, 48, 32, '#cfeaf7', st('#8cc2de', 3)) +
+    path('M24,56 Q36,30 52,40 Q64,48 70,36', 'none', { stroke: '#3f8fd6', strokeWidth: 7, strokeLinecap: 'round' }) +
+    path('M30,66 Q46,54 60,64', 'none', { stroke: '#f06a5e', strokeWidth: 5, strokeLinecap: 'round' }) +
+    ellipse(36, 32, 9, 6, '#ffffff', { opacity: 0.85, transform: 'rotate(-30 36 32)' }),
+  pocket_watch: () => path('M48,18 Q60,4 74,12', 'none', { stroke: '#d9a52a', strokeWidth: 4, strokeDasharray: '5 3', strokeLinecap: 'round' }) +
+    rect(42, 12, 12, 10, '#d9a52a', { rx: 3 }) + circle(48, 54, 32, '#f6c945', st('#d9a52a', 4)) + circle(48, 54, 25, '#fffaf0', st('#e3cf9c', 2)) +
+    [0, 1, 2, 3].map((i) => { const a = i * Math.PI / 2; return circle(48 + Math.cos(a) * 20, 54 + Math.sin(a) * 20, 2.4, '#8a6a3c'); }).join('') +
+    path('M48,54 V38 M48,54 L58,58', 'none', { stroke: '#5b4a3a', strokeWidth: 4, strokeLinecap: 'round' }) + circle(48, 54, 3, '#5b4a3a'),
+  shell: () => path('M20,70 Q12,40 36,24 Q58,12 74,30 Q86,46 76,62 Q66,76 50,72 Q38,68 40,56 Q42,46 52,48 Q60,50 58,58', '#f7cba4',
+    { stroke: '#d08a5c', strokeWidth: 4, strokeLinejoin: 'round', strokeLinecap: 'round' }) +
+    path('M20,70 L50,72', 'none', { stroke: '#d08a5c', strokeWidth: 4, strokeLinecap: 'round' }) + path('M20,70 Q30,80 46,80 L50,72', '#f2b98c', st('#f2b98c', 3)) +
+    ellipse(42, 32, 8, 4, '#fff1e2', { opacity: 0.8, transform: 'rotate(-25 42 32)' }),
+  arrowhead: () => path('M48,10 L70,54 L60,80 H36 L26,54 Z', '#9b8e80', st('#9b8e80', 3)) +
+    path('M48,10 L54,46 L48,80 M48,10 L42,46 M30,58 L42,46 L54,46 L66,58', 'none', { stroke: shade('#9b8e80', -0.18), strokeWidth: 2.5, strokeLinejoin: 'round' }) +
+    rect(40, 80, 16, 8, '#8a6a3c', { rx: 3 }),
+  fossil: () => path('M14,52 Q12,24 42,16 Q74,10 84,40 Q90,70 62,82 Q30,90 14,52 Z', '#ddd0b8', st('#c4b49a', 3)) +
+    path('M30,74 Q46,52 70,26', 'none', { stroke: '#a8987c', strokeWidth: 4, strokeLinecap: 'round' }) +
+    [0, 1, 2, 3, 4].map((i) => {
+      const x = 34 + i * 8, y = 68 - i * 9;
+      return ellipse(x - 7, y - 6, 7, 3.5, '#b5a587', { transform: `rotate(-60 ${x - 7} ${y - 6})` }) +
+        ellipse(x + 6, y + 3, 7, 3.5, '#b5a587', { transform: `rotate(10 ${x + 6} ${y + 3})` });
+    }).join(''),
+  four_leaf: () => path('M48,52 Q52,72 44,88', 'none', { stroke: '#4f9a3c', strokeWidth: 5, strokeLinecap: 'round' }) +
+    [0, 90, 180, 270].map((a) => g(path('M48,48 Q30,44 28,30 Q28,18 38,18 Q46,18 48,28 Q50,18 58,18 Q68,18 68,30 Q66,44 48,48 Z', '#5fb64a', st('#5fb64a', 2.5)) +
+      path('M48,46 V26', 'none', { stroke: '#8fd47a', strokeWidth: 2.5, strokeLinecap: 'round' }), { transform: `rotate(${a + 45} 48 48)` })).join('') +
+    circle(48, 48, 4, '#4f9a3c'),
+  wish_coin: () => circle(48, 50, 34, '#d4a25a', st('#a5763a', 4)) + circle(48, 50, 26, 'none', { stroke: '#b98a48', strokeWidth: 3 }) +
+    rect(39, 41, 18, 18, '#8a6233', { rx: 2 }) +
+    [0, 1, 2, 3].map((i) => { const a = i * Math.PI / 2 - Math.PI / 4; return circle(48 + Math.cos(a) * 18, 50 + Math.sin(a) * 18, 2.6, '#a5763a'); }).join('') +
+    path('M78,10 Q80,20 90,22 Q80,24 78,34 Q76,24 66,22 Q76,20 78,10 Z', '#fffbe6'),
+  star_shard: () => circle(48, 50, 34, '#fff3c4', { opacity: 0.35 }) +
+    path('M46,12 L58,40 L84,44 L62,58 L66,86 L46,70 L30,82 L34,56 L14,42 L40,38 Z', '#ffe27a', st('#e0b02a', 3)) +
+    path('M46,24 L52,42 L46,62 L40,42 Z', '#fff7d1') +
+    path('M80,12 Q81,19 88,20 Q81,21 80,28 Q79,21 72,20 Q79,19 80,12 Z', '#ffffff') +
+    path('M16,70 Q17,75 22,76 Q17,77 16,82 Q15,77 10,76 Q15,75 16,70 Z', '#ffffff'),
 };
 
 function cloud(c) {
@@ -120,5 +177,6 @@ module.exports = function icons() {
   for (const [k, f] of Object.entries(machineIcons)) out.push({ name: `icon/machine_${k}`, svg: S.svg(N, N, f()) });
   for (const [k, f] of Object.entries(upgradeIcons)) out.push({ name: `icon/upgrade_${k}`, svg: S.svg(N, N, f()) });
   for (const [k, f] of Object.entries(ui)) out.push({ name: `icon/${k}`, svg: S.svg(N, N, f()) });
+  for (const [k, f] of Object.entries(keepsakeIcons)) out.push({ name: `icon/keepsake_${k}`, svg: S.svg(N, N, f()) });
   return out;
 };

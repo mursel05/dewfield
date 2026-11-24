@@ -18,6 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import dev.mursal.dewfield.DewfieldGame
+import dev.mursal.dewfield.app.Notifier
+import dev.mursal.dewfield.app.Settings
+import dev.mursal.dewfield.model.DailyGift
 import dev.mursal.dewfield.model.Farm
 import dev.mursal.dewfield.model.FarmEvent
 import dev.mursal.dewfield.model.Gain
@@ -31,7 +34,9 @@ import dev.mursal.dewfield.ui.CookPanel
 import dev.mursal.dewfield.ui.FeedShopPanel
 import dev.mursal.dewfield.ui.Floaters
 import dev.mursal.dewfield.ui.GameUi
+import dev.mursal.dewfield.ui.GiftPanel
 import dev.mursal.dewfield.ui.Hud
+import dev.mursal.dewfield.ui.KeepsakePanel
 import dev.mursal.dewfield.ui.LevelUpPanel
 import dev.mursal.dewfield.ui.MachinePanel
 import dev.mursal.dewfield.ui.Modal
@@ -41,10 +46,13 @@ import dev.mursal.dewfield.ui.OrdersPanel
 import dev.mursal.dewfield.ui.PausePanel
 import dev.mursal.dewfield.ui.SeedShopPanel
 import dev.mursal.dewfield.ui.SellPanel
+import dev.mursal.dewfield.ui.ShelfPanel
+import dev.mursal.dewfield.ui.Sky
 import dev.mursal.dewfield.ui.SleepPanel
 import dev.mursal.dewfield.ui.Toasts
 import dev.mursal.dewfield.ui.TvPanel
 import dev.mursal.dewfield.ui.Ui
+import dev.mursal.dewfield.ui.WishPanel
 import dev.mursal.dewfield.ui.WorkshopPanel
 import dev.mursal.dewfield.world.Locations
 import dev.mursal.dewfield.world.Panel
@@ -79,13 +87,21 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     private var toastsOverPanel: Boolean? = null
     private var hintGap = 0f
     private var stepClock = 0f
+    private val sky: Sky
+
+    /** The real-world day the daily gift was last offered on, so it pops up at most once a day. */
+    private var giftOfferedDay = Long.MIN_VALUE
 
     init {
         val spawn = if (fresh) "bed" else null
         world.enter(farm.state.location, spawn, useSaved = !fresh)
         renderer = WorldRenderer(game.assets, world)
-        hud = Hud(this, { open(OrdersPanel(this)) }, { open(BagPanel(this)) }, { open(PausePanel(this, game.settings)) })
-        // Floaters and toasts sit above panels so selling or cooking still shows what happened.
+        hud = Hud(this, { open(OrdersPanel(this)) }, { open(BagPanel(this)) }, { open(PausePanel(this, game.settings)) },
+            { open(GiftPanel(this)) })
+        sky = Sky(this)
+        // The sky sits under the HUD, so its buttons always win a tap. Floaters and toasts sit above
+        // panels so selling or cooking still shows what happened.
+        stage.addActor(sky)
         stage.addActor(hud)
         stage.addActor(modals)
         stage.addActor(floaters)
@@ -106,6 +122,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
             showBanner()
             hint("hint.welcome", now = true)
         }
+        offerGift()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -124,6 +141,8 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     }
 
     override fun pause() = save()
+
+    override fun resume() = offerGift()
 
     override fun hide() = save()
 
@@ -152,6 +171,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
         hud.update(dt)
         val panel = modals.isOpen
         hud.setHidden(panel)
+        sky.active = !panel && !busy
         // Above a panel the toasts use the strip kept free over it, one line wide, and messages
         // about the world make way for the panel's own. Otherwise they sit under the top pills
         // (which grow a row at the market), narrow enough to clear the round buttons on the right.
@@ -212,6 +232,11 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
                     modals.show(LevelUpPanel(this, e.level, e.unlocks), queue = true)
                 }
                 FarmEvent.Exhausted -> passOut()
+                is FarmEvent.Keepsake -> {
+                    ui.audio.play("chime")
+                    renderer.effects.burst("sparkle", world.player.x, world.player.y + 0.6f)
+                    modals.show(KeepsakePanel(this, e.id, e.shelfDone), queue = true)
+                }
             }
         }
     }
@@ -227,6 +252,8 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
             Panel.COOK -> CookPanel(this)
             Panel.TV -> TvPanel(this)
             Panel.SLEEP -> SleepPanel(this)
+            Panel.WISH -> WishPanel(this)
+            Panel.SHELF -> ShelfPanel(this)
         }
         open(m)
     }
@@ -242,6 +269,9 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
 
     /** Closes every panel, including queued ones. */
     fun closeAll() = modals.clearAll()
+
+    /** Sends a shooting star across the sky right away (used by the desktop screenshot tour). */
+    fun shootingStar() = sky.launchStar()
 
     val panelOpen: Boolean get() = modals.isOpen
 
@@ -303,6 +333,7 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
                 save()
                 ui.audio.play("rooster")
                 modals.show(MorningPanel(this, report), queue = true)
+                offerGift()
             },
             Actions.fadeOut(0.9f),
         ))
@@ -330,6 +361,28 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
     }
 
     override fun refreshHud() = hud.refresh()
+
+    override val settings: Settings get() = game.settings
+
+    override val notifier: Notifier get() = game.notifier
+
+    override fun today(): Long = DailyGift.today(System.currentTimeMillis())
+
+    override fun askReminders(done: (Boolean) -> Unit) {
+        notifier.requestPermission { ok ->
+            settings.reminders = ok
+            settings.remindersAsked = true
+            done(ok)
+        }
+    }
+
+    /** Opens the daily gift once a real day, after whatever is already showing (the morning report). */
+    private fun offerGift() {
+        val today = today()
+        if (busy || giftOfferedDay == today || !DailyGift.canClaim(farm.state, today)) return
+        giftOfferedDay = today
+        modals.show(GiftPanel(this), queue = true)
+    }
 
     override fun relabel() {
         game.reloadStrings()
@@ -409,6 +462,8 @@ class GameScreen(private val game: DewfieldGame, override val farm: Farm, privat
         }
         if (s.minutes >= 20 * 60) hint("hint.night")
         if (farm.level >= 2) hint("hint.orders")
+        if (sky.starsSeen > 0) hint("hint.star")
+        if (s.day >= 2 && world.location.id == Locations.FARM && world.sparkleCell() != null) hint("hint.sparkle")
     }
 
     // ------------------------------------------------------------------ input

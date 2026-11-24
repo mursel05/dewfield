@@ -32,6 +32,9 @@ sealed interface FarmEvent {
     data class LevelUp(val level: Int, val unlocks: List<String>) : FarmEvent
     /** The clock reached midnight: the farmer collapses. */
     data object Exhausted : FarmEvent
+
+    /** A keepsake was found for the first time. [shelfDone] is true when it completed the shelf. */
+    data class Keepsake(val id: String, val shelfDone: Boolean) : FarmEvent
 }
 
 data class MorningReport(
@@ -48,4 +51,8 @@ data class MorningReport(
     val ordersExpired: Int,
     val newOrders: Int,
     val hotItem: String?,
+    /** A wish for rain at the fountain made today rainy. */
+    val wishCameTrue: Boolean = false,
+    /** A rainbow shows this morning (it rained yesterday). */
+    val rainbow: Boolean = false,
 )

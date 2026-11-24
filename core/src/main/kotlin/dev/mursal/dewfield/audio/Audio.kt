@@ -128,6 +128,7 @@ class Audio(private val settings: Settings) : Disposable {
         val SOUNDS = listOf(
             "click", "open", "close", "tick", "error", "coin", "till", "plant", "water", "harvest",
             "pop", "door", "pet_chicken", "pet_cow", "pet_sheep", "levelup", "sleep", "rooster", "cook", "step",
+            "chime", "splash",
         )
 
         /** World events use descriptive ids; several share one sample. */

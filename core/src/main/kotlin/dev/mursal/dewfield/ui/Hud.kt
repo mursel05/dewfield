@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import dev.mursal.dewfield.model.DailyGift
 import dev.mursal.dewfield.model.Farm
 import dev.mursal.dewfield.model.Gain
 import dev.mursal.dewfield.model.ItemDb
@@ -24,14 +25,21 @@ import kotlin.math.roundToInt
  * The always-on overlay, laid out for portrait screens:
  *
  * - top left, two rows of pills: clock and weather, coins / energy, level;
- * - top right, a column of round buttons: menu, bag, orders;
+ * - top right, a column of round buttons: menu, bag, orders, and below them the daily gift while
+ *   it waits to be opened;
  * - bottom, on the farm: the water can and the task queue, then the seed bar across the screen,
  *   which scrolls sideways when the player owns more seeds than fit.
  *
  * Everything is placed against the screen edges inside the cutout-safe area, so it works from
  * 3:4 tablets to 9:21 phones.
  */
-class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val onBag: () -> Unit, private val onMenu: () -> Unit) : Group() {
+class Hud(
+    private val ctx: GameUi,
+    private val onOrders: () -> Unit,
+    private val onBag: () -> Unit,
+    private val onMenu: () -> Unit,
+    private val onGift: () -> Unit,
+) : Group() {
     private val ui get() = ctx.ui
     private val farm get() = ctx.farm
     private val world get() = ctx.world
@@ -42,6 +50,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
     private val canChip = Table()
     private val queueChip = Table()
     private val marketChip = Table()
+    private val giftChip = Group()
 
     private lateinit var dayLabel: Label
     private lateinit var timeLabel: Label
@@ -75,6 +84,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         addActor(canChip)
         addActor(queueChip)
         addActor(marketChip)
+        addActor(giftChip)
         build()
     }
 
@@ -140,6 +150,21 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         topRight.add(ordersGroup).size(BUTTON).padTop(10f)
         topRight.pack()
 
+        // The gift gives a little wiggle every few seconds so it gets noticed without nagging.
+        giftChip.clearChildren()
+        giftChip.setSize(BUTTON, BUTTON)
+        val gift = ui.roundButton("gift", BUTTON) { onGift() }
+        gift.isTransform = true
+        gift.setOrigin(BUTTON / 2f, BUTTON / 2f)
+        gift.addAction(Actions.forever(Actions.sequence(
+            Actions.delay(2.4f),
+            Actions.rotateTo(-10f, 0.1f, Interpolation.sine),
+            Actions.rotateTo(10f, 0.16f, Interpolation.sine),
+            Actions.rotateTo(-6f, 0.14f, Interpolation.sine),
+            Actions.rotateTo(0f, 0.12f, Interpolation.sine),
+        )))
+        giftChip.addActor(gift)
+
         queueChip.background = ui.pill
         queueChip.add(ui.icon("queue", 36f)).size(36f).padRight(6f)
         queueLabel = ui.label("", ui.head)
@@ -171,6 +196,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         val deliverable = farm.state.orders.count { farm.canDeliver(it) }
         ordersBadge.isVisible = deliverable > 0
         ordersBadgeLabel.setText(deliverable.toString())
+        giftChip.isVisible = DailyGift.canClaim(farm.state, ctx.today())
     }
 
     private fun buildBottom(items: List<String>) {
@@ -298,6 +324,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         topLeft.setPosition(left, top - topLeft.height)
         topRight.pack()
         topRight.setPosition(right - topRight.width, top - topRight.height)
+        giftChip.setPosition(right - BUTTON, top - topRight.height - GIFT_GAP - BUTTON)
         marketChip.pack()
         marketChip.setPosition(left, top - topLeft.height - MARKET_GAP - marketChip.height)
 
@@ -316,6 +343,7 @@ class Hud(private val ctx: GameUi, private val onOrders: () -> Unit, private val
         const val BAR = 84f
         const val BAR_PAD = 7f
         const val MARKET_GAP = 10f
+        const val GIFT_GAP = 16f
     }
 }
 

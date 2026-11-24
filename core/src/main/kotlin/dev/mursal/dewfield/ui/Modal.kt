@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.badlogic.gdx.utils.Align
+import dev.mursal.dewfield.app.Notifier
+import dev.mursal.dewfield.app.Settings
 import dev.mursal.dewfield.model.Farm
 import dev.mursal.dewfield.model.Gain
 import dev.mursal.dewfield.model.Msg
@@ -31,6 +33,18 @@ interface GameUi {
     fun sleep()
     fun relabel()
     fun exitToTitle()
+
+    /** Player settings (language, sound, reminders). */
+    val settings: Settings
+
+    /** Local notifications; [Notifier.None] where the platform has none. */
+    val notifier: Notifier
+
+    /** Today's calendar day in the player's time zone, for the daily gift. */
+    fun today(): Long
+
+    /** Asks the system for notification permission and turns reminders on or off with the answer. */
+    fun askReminders(done: (Boolean) -> Unit)
 
     /** Shows the result of a rules call: message, floating gains and a sound. */
     fun report(result: Outcome, okSound: String = "coin"): Boolean {

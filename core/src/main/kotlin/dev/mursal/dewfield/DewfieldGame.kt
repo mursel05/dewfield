@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import dev.mursal.dewfield.app.Notice
+import dev.mursal.dewfield.app.Notifier
 import dev.mursal.dewfield.app.SaveStore
 import dev.mursal.dewfield.app.Settings
 import dev.mursal.dewfield.audio.Audio
@@ -11,6 +13,7 @@ import dev.mursal.dewfield.gfx.Assets
 import dev.mursal.dewfield.i18n.Lang
 import dev.mursal.dewfield.i18n.Strings
 import dev.mursal.dewfield.model.Farm
+import dev.mursal.dewfield.model.Reminders
 import dev.mursal.dewfield.screen.GameScreen
 import dev.mursal.dewfield.screen.TitleScreen
 import dev.mursal.dewfield.ui.Ui
@@ -20,9 +23,10 @@ import dev.mursal.dewfield.world.Locations
  * The application: owns shared services (assets, audio, strings, settings, the save slot)
  * and switches between the title and the game.
  *
- * [director] lets the desktop build drive the game for automated screenshots.
+ * [director] lets the desktop build drive the game for automated screenshots. [notifier] posts the
+ * local reminders the game leaves behind when it goes to the background (Android only).
  */
-class DewfieldGame(val director: Director? = null) : Game() {
+class DewfieldGame(val director: Director? = null, val notifier: Notifier = Notifier.None) : Game() {
     lateinit var settings: Settings
         private set
     lateinit var assets: Assets
@@ -48,6 +52,8 @@ class DewfieldGame(val director: Director? = null) : Game() {
         batch = SpriteBatch()
         reloadStrings()
         ui = Ui(assets, { strings }, audio)
+        // The player is here now: reminders already shown or pending are out of date.
+        notifier.cancelAll()
         director?.started(this)
         showTitle()
     }
@@ -97,11 +103,30 @@ class DewfieldGame(val director: Director? = null) : Game() {
     override fun pause() {
         super.pause()
         audio.pause()
+        planReminders()
     }
 
     override fun resume() {
         super.resume()
         audio.resume()
+        notifier.cancelAll()
+    }
+
+    /**
+     * Leaves reminders behind for when the player is away, worded in the current language. The
+     * screen saved the farm in [pause] just before; from the title, the saved farm is used.
+     */
+    private fun planReminders() {
+        if (!notifier.available) return
+        if (!settings.reminders || !notifier.allowed()) {
+            notifier.cancelAll()
+            return
+        }
+        val farm = (screen as? GameScreen)?.farm ?: saves.load()?.let { Farm(it, Locations.FIELD) } ?: return
+        val notices = Reminders.plan(farm, System.currentTimeMillis()).map {
+            Notice(it.kind.ordinal + 1, it.atMillis, strings.msg(it.title), strings.msg(it.text))
+        }
+        notifier.schedule(notices)
     }
 
     override fun dispose() {

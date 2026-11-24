@@ -11,6 +11,15 @@ enum class Prop { NONE, TREE, PINE, BUSH, ROCK, FLOWERS, TUFT, FENCE, GATE }
 enum class ObjKind {
     HOUSE, DOOR, EXIT, BED, TV, STOVE, WELL, MILL, TROUGH, COOP, BARN, MACHINE,
     SHOP_SEEDS, SHOP_FEED, BUYER, WORKSHOP, BOARD, SIGN, DECOR,
+
+    /** The wishing fountain at the market. */
+    FOUNTAIN,
+
+    /** A bench to sit on and rest. */
+    BENCH,
+
+    /** The keepsake shelf at home. */
+    SHELF,
 }
 
 /**

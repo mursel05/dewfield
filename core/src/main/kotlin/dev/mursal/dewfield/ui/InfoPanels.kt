@@ -6,6 +6,7 @@ import dev.mursal.dewfield.app.Settings
 import dev.mursal.dewfield.i18n.Lang
 import dev.mursal.dewfield.model.ItemDb
 import dev.mursal.dewfield.model.MorningReport
+import dev.mursal.dewfield.model.Msg
 import dev.mursal.dewfield.model.Weather
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -59,7 +60,7 @@ class TvPanel(ctx: GameUi) : Modal(ctx, ctx.ui.t("tv.title"), "info", prefH = Mo
     }
 
     companion object {
-        const val TIPS = 12
+        const val TIPS = 15
     }
 }
 
@@ -110,6 +111,8 @@ class MorningPanel(ctx: GameUi, private val r: MorningReport) : Modal(ctx, ctx.u
         if (r.ordersExpired > 0) line("orders", ui.f("morning.orders_expired", r.ordersExpired), Ui.BAD)
         if (r.newOrders > 0) line("orders", ui.f("morning.orders_new", r.newOrders))
         r.hotItem?.let { line("star_gold", ui.f("morning.hot", ui.t("item.$it")), Ui.GOLD) }
+        if (r.wishCameTrue) line("fountain", ui.t("morning.wish_rain"), Ui.GOOD)
+        if (r.rainbow) line("rainbow", ui.t("morning.rainbow"), Ui.GOOD)
         body.add(ui.scroll(list)).grow().row()
         body.add(ui.button(ui.t("morning.go"), "green", "sun") { ctx.close(this) }).growX().height(72f).padTop(10f)
     }
@@ -151,14 +154,32 @@ class PausePanel(ctx: GameUi, private val settings: Settings) : Modal(ctx, ctx.u
         // Portrait: the buttons first, the farm's stats below them.
         val left = Table().apply { top() }
         left.add(ui.button(ui.t("pause.resume"), "green", "play") { ctx.close(this) }).growX().height(70f).padBottom(12f).row()
-        left.add(ui.button(ui.t(if (settings.sound) "pause.sound_on" else "pause.sound_off"), "cream", if (settings.sound) "sound_on" else "sound_off") {
+        // Sound and music share a row so the reminders switch fits on short screens too.
+        val toggles = Table()
+        toggles.add(ui.button(ui.t(if (settings.sound) "pause.sound_on" else "pause.sound_off"), "cream", if (settings.sound) "sound_on" else "sound_off") {
             settings.sound = !settings.sound
             rebuild()
-        }).growX().height(64f).padBottom(10f).row()
-        left.add(ui.button(ui.t(if (settings.music) "pause.music_on" else "pause.music_off"), "cream", "music") {
+        }).growX().uniformX().height(64f).padRight(10f)
+        toggles.add(ui.button(ui.t(if (settings.music) "pause.music_on" else "pause.music_off"), "cream", "music") {
             settings.music = !settings.music
             rebuild()
-        }).growX().height(64f).padBottom(10f).row()
+        }).growX().uniformX().height(64f)
+        left.add(toggles).growX().padBottom(10f).row()
+        if (ctx.notifier.available) {
+            val on = settings.reminders && ctx.notifier.allowed()
+            left.add(ui.button(ui.t(if (on) "pause.reminders_on" else "pause.reminders_off"), "cream", "bell") {
+                if (on) {
+                    settings.reminders = false
+                    settings.remindersAsked = true
+                    rebuild()
+                } else {
+                    ctx.askReminders { ok ->
+                        ctx.toast(Msg(if (ok) "msg.reminders_on" else "msg.reminders_blocked"))
+                        rebuild()
+                    }
+                }
+            }).growX().height(64f).padBottom(10f).row()
+        }
         left.add(ui.button(ui.t("pause.language"), "cream", "globe") {
             settings.lang = if (settings.lang == Lang.EN) Lang.AZ else Lang.EN
             ctx.relabel()
@@ -182,6 +203,7 @@ class PausePanel(ctx: GameUi, private val settings: Settings) : Modal(ctx, ctx.u
         stat("egg", "stats.products", st.productsCollected)
         stat("orders", "stats.orders", st.ordersDone)
         stat("heart", "stats.animals", farm.state.animals.size)
+        stat("keepsake_pocket_watch", "stats.keepsakes", "${farm.leisure.found}/${ItemDb.keepsakes.size}")
         right.add(ui.label(ui.t("pause.autosave"), ui.soft, wrap = true)).growX().padTop(8f)
 
         body.add(left).growX().padBottom(14f).row()

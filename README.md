@@ -47,7 +47,9 @@
 - **Progress.**
   - Orders from the townsfolk, farm levels that unlock new crops, animals and machines, and upgrades for the can, farmland, coop and barn.
 - **Two languages.** English and Azerbaijani, switchable at any time.
-- **Offline, no ads, no tracking.** The game requests no Android permissions.
+- **Little surprises.** Toss a coin in the fountain and make a wish, rest on a bench at sunset, catch a shooting star, find the end of the rainbow and collect nine keepsakes for your shelf. A small gift waits every day you visit.
+- **Gentle reminders, if you want them.** Local notifications when crops are ripe or a gift is waiting, never at night. Off until you say yes.
+- **Offline, no ads, no tracking.** The only permission is for those optional reminders.
 
 ## Download
 
@@ -62,7 +64,7 @@ It needs Android 7.0 or newer.
 You need JDK 17+ (21 recommended).
 
 ```bash
-./gradlew :core:test          # 66 unit tests: rules, world, strings
+./gradlew :core:test          # 94 unit tests: rules, world, strings
 ./gradlew :desktop:run        # play on desktop (mouse = finger, scroll = zoom, Esc = back)
 ./gradlew :android:assembleRelease   # APK, needs the Android SDK (platform 36)
 ```

@@ -52,13 +52,18 @@ function torso(dir) {
   return d;
 }
 
-function head(dir) {
+function head(dir, calm = false) {
   let d = '';
   if (dir === 'down') {
     d += circle(64, 66, 30, SKIN, st(SKIN));
     d += path('M36,62 Q38,40 64,40 Q90,40 92,62 Q84,52 64,52 Q44,52 36,62 Z', HAIR);
-    d += ellipse(53, 70, 4, 5, '#3a2a20') + ellipse(75, 70, 4, 5, '#3a2a20');
-    d += circle(54, 68, 1.5, '#ffffff') + circle(76, 68, 1.5, '#ffffff');
+    if (calm) {
+      // Eyes closed, enjoying the rest.
+      d += path('M48,70 Q53,75 58,70 M70,70 Q75,75 80,70', 'none', { stroke: '#3a2a20', strokeWidth: 3, strokeLinecap: 'round' });
+    } else {
+      d += ellipse(53, 70, 4, 5, '#3a2a20') + ellipse(75, 70, 4, 5, '#3a2a20');
+      d += circle(54, 68, 1.5, '#ffffff') + circle(76, 68, 1.5, '#ffffff');
+    }
     d += ellipse(46, 80, 6, 4, '#f29a8a', { opacity: 0.7 }) + ellipse(82, 80, 6, 4, '#f29a8a', { opacity: 0.7 });
     d += path('M58,82 Q64,87 70,82', 'none', { stroke: '#8a4b3a', strokeWidth: 3, strokeLinecap: 'round' });
   } else if (dir === 'up') {
@@ -85,6 +90,22 @@ function farmer(dir, frame) {
     ? arms(dir, frame) + legs(dir, frame) + torso(dir) + head(dir)
     : legs(dir, frame) + torso(dir) + arms(dir, frame) + head(dir);
   d += g(body, { transform: `translate(0,${bob})` });
+  return S.svg(128, 176, d);
+}
+
+// Sitting on a bench, facing the view, hands in the lap. Same 128x176 canvas; the hips sit about
+// 0.3 tiles above its bottom, which WorldRenderer.SEAT_LIFT lines up with the bench's seat plank.
+function farmerSit() {
+  const dy = 14;
+  let d = shadow(64, 171, 24, 5, 0.18);
+  d += line(52, 158, 52, 166, OVERALL, 13) + line(76, 158, 76, 166, OVERALL, 13);
+  d += ellipse(52, 169, 10, 6, BOOT) + ellipse(76, 169, 10, 6, BOOT);
+  d += g(torso('down') + head('down', true), { transform: `translate(0,${dy})` });
+  // Thighs come towards the viewer, so they show short and in front of the body.
+  d += rect(41, 144, 22, 18, shade(OVERALL, 0.06), { rx: 9, ...st(OVERALL, 2) });
+  d += rect(65, 144, 22, 18, shade(OVERALL, 0.06), { rx: 9, ...st(OVERALL, 2) });
+  d += line(39, 118, 47, 144, SHIRT, 12) + line(89, 118, 81, 144, SHIRT, 12);
+  d += circle(49, 148, 7, SKIN) + circle(79, 148, 7, SKIN);
   return S.svg(128, 176, d);
 }
 
@@ -194,6 +215,7 @@ function sheep(frame) {
 module.exports = function characters() {
   const out = [];
   for (const dir of ['down', 'up', 'side']) for (let f = 0; f < 4; f++) out.push({ name: `char/farmer_${dir}_${f}`, svg: farmer(dir, f) });
+  out.push({ name: 'char/farmer_sit', svg: farmerSit() });
   for (const k of ['nargiz', 'orkhan', 'leyla', 'tural']) out.push({ name: `char/${k}`, svg: keeper(k) });
   for (let f = 0; f < 4; f++) {
     out.push({ name: `animal/chicken_${f}`, svg: chicken(f, false) });

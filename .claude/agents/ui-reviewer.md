@@ -9,7 +9,7 @@ You review Dewfield's UI from real screenshots, not from code alone.
 1. Run the tour into a fresh directory:
    `xvfb-run -a -s "-screen 0 720x1600x24" ./gradlew :desktop:run -q --args="--tour $PWD/build/tour --size 720x1600"`
    The game is portrait. For layout changes, also run it at `--size 720x1280` and `--size 960x1280` (match the xvfb screen size).
-2. Look at every screenshot the change could affect, including the Azerbaijani ones (23–25). Check for:
+2. Look at every screenshot the change could affect, including the Azerbaijani ones (23–28). Check for:
    - text clipped, overlapping, wrapping one word per line, or running outside its panel;
    - buttons pushed below the panel edge, or detail panes that don't scroll;
    - white glyph icons on cream backgrounds, which means a tint is missing;

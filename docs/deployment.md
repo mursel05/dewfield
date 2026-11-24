@@ -55,4 +55,4 @@ adb install -r android/build/outputs/apk/release/*.apk
 ## Google Play (later)
 
 - Use `./gradlew :android:bundleRelease` to get an AAB. Enrol in Play App Signing, upload with the upload key, and fill in the content rating (no ads, no data collection).
-- The app requests no permissions.
+- The app asks for two permissions, both for local reminders: `POST_NOTIFICATIONS` (Android 13+, asked only when the player turns reminders on) and `RECEIVE_BOOT_COMPLETED` (to keep pending reminders after a reboot). It still collects no data and makes no network calls.
