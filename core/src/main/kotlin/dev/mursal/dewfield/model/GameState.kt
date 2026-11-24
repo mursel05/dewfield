@@ -85,6 +85,40 @@ data class Stats(
     var daysPlayed: Int = 0,
 )
 
+/**
+ * The fountain, benches, shooting stars, rainbows and keepsakes. Counters ending in "Today" reset
+ * every night. Added after save version 3 shipped: every field has a default, so older saves load.
+ */
+@Serializable
+data class LeisureState(
+    var wishesToday: Int = 0,
+    var wishesMade: Int = 0,
+    /** Set when a wish for rain came true, so the morning report can say so. */
+    var wishedRain: Boolean = false,
+    /** Energy rested on benches today. */
+    var restedToday: Int = 0,
+    var starCaughtToday: Boolean = false,
+    var starsCaught: Int = 0,
+    /** The day whose morning shows a rainbow (the day after rain), and the day its coins were found. */
+    var rainbowDay: Int = 0,
+    var rainbowTakenDay: Int = 0,
+    /** The day today's sparkle was picked up. */
+    var sparkleTakenDay: Int = 0,
+    /** Keepsakes found, in the order they were found. */
+    val keepsakes: MutableList<String> = mutableListOf(),
+    var shelfRewarded: Boolean = false,
+)
+
+/** The daily gift calendar. [lastDay] is the calendar day (in the device's time zone) of the last claim. */
+@Serializable
+data class GiftState(
+    var lastDay: Long? = null,
+    /** Gifts claimed so far; the next one is `claimed % 7` in the calendar. */
+    var claimed: Int = 0,
+    /** Game day of the last claim. A gift also needs a night's sleep since, so moving the phone's clock ahead pays nothing extra. */
+    var lastGameDay: Int = 0,
+)
+
 @Serializable
 data class GameState(
     var version: Int = SAVE_VERSION,
@@ -123,4 +157,6 @@ data class GameState(
     val stats: Stats = Stats(),
     /** One-time hints already shown. */
     val seenHints: MutableSet<String> = mutableSetOf(),
+    val leisure: LeisureState = LeisureState(),
+    val gift: GiftState = GiftState(),
 )

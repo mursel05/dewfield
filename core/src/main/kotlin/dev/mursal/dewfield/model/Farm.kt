@@ -76,6 +76,9 @@ class Farm(val state: GameState, val field: FieldLayout) {
     }
 
     val events = ArrayDeque<FarmEvent>()
+
+    /** The fountain, benches, keepsakes and other small pleasures. */
+    val leisure = Leisure(this)
     private var exhaustedSent = false
     private val plotIndex = HashMap<Cell, PlotState>()
 
@@ -295,6 +298,7 @@ class Farm(val state: GameState, val field: FieldLayout) {
         add(key, amount)
         state.stats.harvested += amount
         addXp(def.xp)
+        if (def.id == "clover") leisure.cloverLuck(rng)
         if (def.regrowDays > 0) {
             p.growth = 0
             p.harvests++
@@ -463,9 +467,26 @@ class Farm(val state: GameState, val field: FieldLayout) {
 
     // ------------------------------------------------------------------ market
 
-    private fun pay(amount: Int) {
+    internal fun pay(amount: Int) {
         state.money -= amount
         state.stats.spent += amount
+    }
+
+    /**
+     * Hands over a reward: "coins" is money, "energy" restores energy (never above the maximum),
+     * anything else is an item. Returns what was actually received, for the floating text.
+     */
+    internal fun grant(g: Gain): Gain {
+        when (g.key) {
+            "coins" -> state.money += g.amount
+            "energy" -> {
+                val before = state.energy
+                state.energy = min(MAX_ENERGY, state.energy + g.amount)
+                return Gain("energy", state.energy - before)
+            }
+            else -> add(g.key, g.amount)
+        }
+        return g
     }
 
     fun buy(itemId: String, qty: Int): Outcome {
@@ -719,6 +740,8 @@ class Farm(val state: GameState, val field: FieldLayout) {
 
         state.day++
         state.stats.daysPlayed++
+        val yesterday = state.weather
+        val wishedRain = state.leisure.wishedRain
         state.weather = forcedWeather ?: state.tomorrowWeather
         state.tomorrowWeather = rollWeather(rng("weather"))
         if (state.weather == Weather.RAIN) state.plots.forEach { if (it.tilled) it.watered = true }
@@ -742,6 +765,7 @@ class Farm(val state: GameState, val field: FieldLayout) {
         state.minutes = DAY_START.toDouble()
         state.energy = if (passedOut) PASS_OUT_ENERGY else MAX_ENERGY
         exhaustedSent = false
+        leisure.newDay(yesterday)
 
         val ripe = state.plots.count { isRipe(it) }
         return MorningReport(
@@ -758,6 +782,8 @@ class Farm(val state: GameState, val field: FieldLayout) {
             ordersExpired = expired,
             newOrders = newOrders,
             hotItem = state.hotItem,
+            wishCameTrue = wishedRain && state.weather == Weather.RAIN,
+            rainbow = state.leisure.rainbowDay == state.day,
         )
     }
 }

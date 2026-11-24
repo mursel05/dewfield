@@ -76,6 +76,15 @@ data class UpgradeDef(val id: String, val levels: List<UpgradeLevel>) {
 
 enum class Weather { SUNNY, CLOUDY, RAIN }
 
+/** What the farmer can wish for at the market fountain. */
+enum class Wish { RAIN, GIFT, ENERGY }
+
+/** Where a keepsake turns up: sparkles on the ground, a lucky clover harvest, the fountain or a shooting star. */
+enum class KeepsakeSource { GROUND, CLOVER, FOUNTAIN, STAR }
+
+/** A small found object for the shelf at home. It has no price and never enters the bag. */
+data class KeepsakeDef(val id: String, val source: KeepsakeSource)
+
 object ItemDb {
     const val FERTILIZER = "fertilizer"
 
@@ -213,6 +222,81 @@ object ItemDb {
 
     /** People who post delivery orders on the board. */
     val orderClients = listOf("gulnar", "ramin", "sevda", "elvin", "kamal", "aysel")
+
+    // ------------------------------------------------------------------ pastimes
+    // The fountain, benches, keepsakes, shooting stars and the daily gift. Their rewards are small and
+    // capped per day, so they add surprises without becoming a better income than farming.
+
+    /** One coin toss at the fountain. */
+    const val WISH_COST = 10
+    const val WISHES_PER_DAY = 3
+
+    /** Chance that a wish comes true. The first wish on a farm always does. */
+    val wishChance: Map<Wish, Float> = mapOf(Wish.RAIN to 0.35f, Wish.GIFT to 0.3f, Wish.ENERGY to 0.45f)
+    const val WISH_ENERGY = 20
+
+    /** Bench rest: one energy every [REST_MINUTES] game minutes (twice as fast at sunset), up to [REST_CAP] a day. */
+    const val REST_MINUTES = 4.0
+    const val REST_CAP = 20
+    const val SUNSET_START = 18 * 60
+    const val SUNSET_END = 20 * 60 + 30
+
+    /**
+     * A small gift (a granted wish, a shooting star): a pair of cheap seeds, some fertilizer or a little
+     * feed. Only seeds up to [GIFT_SEED_MAX_PRICE] qualify, so luck never pays for an expensive field.
+     */
+    const val GIFT_SEEDS = 2
+    const val GIFT_SEED_MAX_PRICE = 40
+    const val GIFT_FERTILIZER = 2
+    const val GIFT_FEED = 5
+
+    /** Coins at the end of the rainbow that shows the morning after rain. */
+    const val RAINBOW_COINS_MIN = 15
+    const val RAINBOW_COINS_MAX = 35
+
+    /** Share of days with a sparkle somewhere on the ground. */
+    const val SPARKLE_CHANCE = 0.6f
+
+    /** Once every ground keepsake is found, a sparkle holds a few coins instead. */
+    const val SPARKLE_COINS_MIN = 5
+    const val SPARKLE_COINS_MAX = 15
+
+    /** Chance that a clover harvest or a wish turns up its keepsake, until it is found. */
+    const val CLOVER_KEEPSAKE_CHANCE = 0.05f
+    const val FOUNTAIN_KEEPSAKE_CHANCE = 0.08f
+    const val KEEPSAKE_XP = 10
+
+    /** One-time reward for a full shelf. */
+    const val SHELF_REWARD_COINS = 250
+    const val SHELF_REWARD_XP = 40
+
+    val keepsakes: List<KeepsakeDef> = listOf(
+        KeepsakeDef("horseshoe", KeepsakeSource.GROUND),
+        KeepsakeDef("marble", KeepsakeSource.GROUND),
+        KeepsakeDef("pocket_watch", KeepsakeSource.GROUND),
+        KeepsakeDef("shell", KeepsakeSource.GROUND),
+        KeepsakeDef("arrowhead", KeepsakeSource.GROUND),
+        KeepsakeDef("fossil", KeepsakeSource.GROUND),
+        KeepsakeDef("four_leaf", KeepsakeSource.CLOVER),
+        KeepsakeDef("wish_coin", KeepsakeSource.FOUNTAIN),
+        KeepsakeDef("star_shard", KeepsakeSource.STAR),
+    )
+
+    fun keepsakesFrom(source: KeepsakeSource): List<String> = keepsakes.filter { it.source == source }.map { it.id }
+
+    /**
+     * The daily gift calendar, one entry per day the player visits, round and round. Missing a day
+     * never resets it. "coins" is money; everything else is an item id.
+     */
+    val dailyGifts: List<List<Gain>> = listOf(
+        listOf(Gain("coins", 25)),
+        listOf(Gain(FERTILIZER, 2)),
+        listOf(Gain("lettuce_seeds", 4)),
+        listOf(Gain("grain", 10)),
+        listOf(Gain("coins", 50)),
+        listOf(Gain(FERTILIZER, 3)),
+        listOf(Gain("coins", 100), Gain("pancakes", 1)),
+    )
 
     fun item(id: String): ItemDef = items[id] ?: error("Unknown item $id")
     fun crop(id: String): CropDef = crops[id] ?: error("Unknown crop $id")
