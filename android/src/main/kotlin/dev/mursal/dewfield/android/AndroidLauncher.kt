@@ -7,9 +7,12 @@ import dev.mursal.dewfield.DewfieldGame
 
 /**
  * Starts the game full screen in portrait. It draws under the notch; the HUD and panels keep
- * their controls inside `Gdx.graphics.safeInset*` (see `Ui.SafeArea`).
+ * their controls inside `Gdx.graphics.safeInset*` (see `Ui.SafeArea`). Local reminders go
+ * through [AndroidNotifier].
  */
 class AndroidLauncher : AndroidApplication() {
+    private lateinit var notifier: AndroidNotifier
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val config = AndroidApplicationConfiguration().apply {
@@ -20,6 +23,12 @@ class AndroidLauncher : AndroidApplication() {
             numSamples = 0
             r = 8; g = 8; b = 8; a = 8
         }
-        initialize(DewfieldGame(), config)
+        notifier = AndroidNotifier(this)
+        initialize(DewfieldGame(notifier = notifier), config)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        notifier.onPermissionResult(requestCode, grantResults)
     }
 }

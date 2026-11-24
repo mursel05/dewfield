@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status bar icon: a sprout with a dew drop, white on transparent as Android expects. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11,21V13.6C8.2,13.4 5.6,11.6 4.6,8.2C7.8,7.6 10.4,9 11.4,11.8C11.9,8.4 14.2,6 17.8,5.6C17.9,9.6 15.6,12.4 13,13.3V21Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M6,2.5C7.1,4 7.8,5.1 7.8,5.9C7.8,6.9 7,7.7 6,7.7C5,7.7 4.2,6.9 4.2,5.9C4.2,5.1 4.9,4 6,2.5Z" />
+</vector>
