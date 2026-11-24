@@ -22,7 +22,7 @@ It is written in Kotlin on libGDX. The art is soft vector, never pixel art, and 
 | Unit tests (rules, world, strings) | `./gradlew :core:test` |
 | Compile everything but Android | `./gradlew :core:compileKotlin :desktop:compileKotlin` |
 | Run on desktop | `./gradlew :desktop:run` |
-| Screenshot tour (25 PNGs) | `./gradlew :desktop:run --args="--tour /abs/out/dir --size 720x1600"` (headless: prefix `xvfb-run -a -s "-screen 0 720x1600x24"`) |
+| Screenshot tour (34 PNGs) | `./gradlew :desktop:run --args="--tour /abs/out/dir --size 720x1600"` (headless: prefix `xvfb-run -a -s "-screen 0 720x1600x24"`) |
 | Regenerate strings | `python3 tools/i18n/strings.py` |
 | Regenerate sounds and music | `python3 tools/audio/synth.py` (needs numpy and ffmpeg with libvorbis) |
 | Regenerate art atlas | `node tools/art/build.js` then `./gradlew :tools:packAtlas` (needs Node and Playwright, see `docs/conventions.md`) |

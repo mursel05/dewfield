@@ -102,6 +102,68 @@ The total XP needed for levels 1 to 10 is 0, 60, 180, 400, 750, 1250, 2000, 3000
 | Pancakes | egg, milk, wheat | 75 |
 | Pumpkin soup | pumpkin, milk | 100 |
 
+## Pastimes and surprises
+
+Small extras that make the world nicer to spend time in. Every reward is small and capped per day,
+so none of them earns more than farming. The numbers live in the "pastimes" block of `ItemDb`.
+
+- **Benches:** one on the farm above the pond, two at the market. Sitting gives 1 energy every 4 game
+  minutes, up to 20 a day, twice as fast at sunset (18:00–20:30). The clock keeps running while you sit,
+  so a full rest costs 80 game minutes (40 at sunset).
+- **Wishing fountain** (market): a wish costs 10 coins, 3 a day. The first wish on a farm always comes true.
+
+  | Wish | Comes true | Gives |
+  | --- | --- | --- |
+  | Rain tomorrow | 35% | tomorrow's weather turns to rain (not offered when rain is already coming) |
+  | A little gift | 30% | a small gift (below) |
+  | A burst of energy | 45% | +20 energy (not offered at full energy) |
+
+- **Small gift** (a granted wish, a caught star): 2 seeds the player can already buy that cost 40 or less,
+  2 fertilizer, or 5 feed for an animal the farm keeps (fertilizer when it keeps none).
+- **Shooting stars:** on nights without rain, from 20:30, a star crosses the sky every 18–35 seconds
+  (2.5× as often while sitting on a bench). Tapping one makes a wish: a small gift, once a night.
+  The first star ever caught is the star shard keepsake.
+- **Rainbow:** the morning after a rainy day, until 10:00. Tapping it finds 15–35 coins, once.
+- **Sparkles:** on 60% of days something glints at one of 10 quiet spots on the farm or at the market.
+  It is a ground keepsake the player doesn't have yet, or 5–15 coins once they have them all.
+- **The well:** tap it five times quickly with a full can and it echoes back.
+
+### Keepsakes
+
+Nine little finds for the shelf at home. Each one gives 10 XP. A full shelf pays 250 coins and 40 XP, once.
+
+| Where | Keepsakes |
+| --- | --- |
+| Sparkles on the ground | horseshoe, glass marble, pocket watch, spiral shell, stone arrowhead, fern fossil |
+| Harvesting clover (5% per harvest) | four-leaf clover |
+| Making a wish (8% per wish) | old wishing coin |
+| The first shooting star caught | star shard |
+
+### Daily gift
+
+One gift per real calendar day (the phone's time zone), starting after the first night's sleep.
+Missing days never resets the calendar, it just waits. Turning the clock back can't claim twice, and a gift
+also needs a night's sleep in the game since the last one, so pushing the clock ahead doesn't pay either.
+After day 7 it starts over.
+
+| Day | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Gift | 25 coins | 2 fertilizer | 4 lettuce seeds | 10 grain | 50 coins | 3 fertilizer | 100 coins and pancakes |
+
+### Reminders (Android)
+
+Local notifications, off until the player says yes. The game offers them once, right after the first
+daily gift, and the menu has a switch. Nothing goes over the network.
+
+- When the game goes to the background it plans at most one reminder of each kind, at least 6 hours
+  apart and never between 21:00 and 09:00 (those move to 09:30):
+  - **Farm news,** 4 hours later: ripe crops, else goods waiting in the coop or barn, else finished
+    machine goods, else a trough too low for tonight. Game time only moves while playing, so the news
+    is still true when it arrives.
+  - **Daily gift:** 3 hours later if it is still unopened, else tomorrow at 10:00.
+  - **Come back:** after 3 days away, at 18:00, naming one of the farm's animals.
+- Opening the game cancels them all.
+
 ## World
 
 The game is played in portrait, so every map is taller than it is wide.
@@ -111,8 +173,8 @@ The game is played in portrait, so every map is taller than it is wide.
   - The house and mill are in the middle. The road to the market leaves on the right.
   - The four field blocks are at the bottom, two by two, with the well beside them. Each block is 4 plots wide and 6 tall.
   - Blocks unlock top-left, top-right, bottom-left, bottom-right.
-- **Market (16x30):** three stalls along the top (seeds, feed and animals, buyer), Tural's workshop in the middle, the fountain and the order board below. The road home is on the left.
-- **House (10x15):** the bed, shelf and TV in a nook at the top, the stove under its own wall on the right, and the living room above the door.
+- **Market (16x30):** three stalls along the top (seeds, feed and animals, buyer), Tural's workshop in the middle, the wishing fountain, two benches and the order board below. The road home is on the left.
+- **House (10x15):** the bed, the keepsake shelf and the TV in a nook at the top, the stove under its own wall on the right, and the living room above the door.
 
 ## Start
 
