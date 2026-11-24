@@ -148,6 +148,8 @@ object Locations {
             WorldObject("loom", ObjKind.MACHINE, 19, 30, overhang = 0.6f, arg = "loom"),
             WorldObject("sign_market", ObjKind.SIGN, 19, 18, overhang = 0.6f, arg = "sign.market"),
             WorldObject("exit_market", ObjKind.EXIT, 21, 16, 1, 2, solid = false, target = MARKET to "farm_road"),
+            // A bench above the pond, facing the water: the best seat for the sunset.
+            WorldObject("bench3", ObjKind.BENCH, 17, 10, 2, 1, arg = "bench"),
         ),
         spawns = mapOf(
             "house_door" to Spawn(Cell(4, 18), Facing.DOWN),
@@ -166,13 +168,13 @@ object Locations {
             WorldObject("stall_produce", ObjKind.BUYER, 10, 24, 3, 2, standCells = listOf(Cell(11, 23), Cell(10, 23), Cell(12, 23)), overhang = 1.6f),
             WorldObject("workshop", ObjKind.WORKSHOP, 9, 15, 5, 3, standCells = listOf(Cell(11, 14)), overhang = 1.6f),
             WorldObject("board", ObjKind.BOARD, 9, 7, 2, 1, standCells = listOf(Cell(9, 6), Cell(10, 6)), overhang = 1.3f),
-            WorldObject("fountain", ObjKind.DECOR, 3, 11, 4, 3, overhang = 0.9f, arg = "fountain"),
+            WorldObject("fountain", ObjKind.FOUNTAIN, 3, 11, 4, 3, overhang = 0.9f, arg = "fountain"),
             WorldObject("lamp1", ObjKind.DECOR, 1, 21, overhang = 1.6f, arg = "lamp"),
             WorldObject("lamp2", ObjKind.DECOR, 14, 21, overhang = 1.6f, arg = "lamp"),
             WorldObject("lamp3", ObjKind.DECOR, 1, 5, overhang = 1.6f, arg = "lamp"),
             WorldObject("lamp4", ObjKind.DECOR, 14, 5, overhang = 1.6f, arg = "lamp"),
-            WorldObject("bench1", ObjKind.DECOR, 2, 17, 2, 1, arg = "bench"),
-            WorldObject("bench2", ObjKind.DECOR, 11, 11, 2, 1, arg = "bench"),
+            WorldObject("bench1", ObjKind.BENCH, 2, 17, 2, 1, arg = "bench"),
+            WorldObject("bench2", ObjKind.BENCH, 11, 11, 2, 1, arg = "bench"),
             WorldObject("exit_farm", ObjKind.EXIT, 0, 8, 1, 2, solid = false, target = FARM to "market_road"),
         ),
         spawns = mapOf("farm_road" to Spawn(Cell(1, 8), Facing.RIGHT)),
@@ -184,7 +186,7 @@ object Locations {
         objects = listOf(
             WorldObject("rug", ObjKind.DECOR, 2, 3, 6, 3, solid = false, arg = "rug"),
             WorldObject("bed", ObjKind.BED, 1, 11, 2, 2, standCells = listOf(Cell(3, 11), Cell(3, 12), Cell(1, 10), Cell(2, 10)), overhang = 0.3f),
-            WorldObject("shelf", ObjKind.DECOR, 4, 12, overhang = 1.2f, arg = "shelf"),
+            WorldObject("shelf", ObjKind.SHELF, 4, 12, standCells = listOf(Cell(4, 11)), overhang = 1.2f, arg = "shelf"),
             WorldObject("tv", ObjKind.TV, 5, 12, standCells = listOf(Cell(5, 11)), overhang = 0.9f),
             WorldObject("stove", ObjKind.STOVE, 6, 8, 2, 1, standCells = listOf(Cell(6, 7), Cell(7, 7)), overhang = 0.9f),
             WorldObject("table", ObjKind.DECOR, 4, 4, 2, 1, overhang = 0.4f, arg = "table"),
@@ -199,6 +201,23 @@ object Locations {
             "bed" to Spawn(Cell(3, 11), Facing.DOWN),
         ),
         indoor = true,
+    )
+
+    /**
+     * Places where a sparkle may turn up on the ground, one a day at most (see `Leisure.sparkleIndex`):
+     * quiet corners by rocks, bushes, flowers and the pond, never on a plot, a pen or a path.
+     */
+    val SPARKLES: List<Pair<String, Cell>> = listOf(
+        FARM to Cell(2, 14),
+        FARM to Cell(19, 40),
+        FARM to Cell(19, 3),
+        FARM to Cell(2, 24),
+        FARM to Cell(20, 23),
+        FARM to Cell(1, 8),
+        FARM to Cell(17, 34),
+        MARKET to Cell(1, 28),
+        MARKET to Cell(12, 2),
+        MARKET to Cell(13, 27),
     )
 
     fun create(id: String): Location = when (id) {

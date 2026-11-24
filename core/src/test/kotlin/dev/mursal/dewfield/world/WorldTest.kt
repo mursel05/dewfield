@@ -51,6 +51,19 @@ class MapTest {
     }
 
     @Test
+    fun `sparkle spots are open ground the farmer can reach`() {
+        for ((id, cell) in Locations.SPARKLES) {
+            val loc = Locations.create(id)
+            assertTrue(loc.walkable(cell), "$id $cell is walkable")
+            assertTrue(loc.fieldBlocks.none { cell in it }, "$id $cell is not a field plot")
+            assertTrue(loc.pens.none { it.contains(cell) }, "$id $cell is not inside a pen")
+            // Not under an object, its awning or roof included, so the glint is never hidden.
+            assertNull(loc.objectHit(cell.x + 0.5f, cell.y + 0.5f), "$id $cell is not under an object")
+            for ((name, spawn) in loc.spawns) assertTrue(cell in reachable(loc, spawn.cell), "$id $cell reachable from $name")
+        }
+    }
+
+    @Test
     fun `doors and exits lead to spawns that exist`() {
         for (id in Locations.ALL) {
             val loc = Locations.create(id)
@@ -313,6 +326,65 @@ class WorldTest {
         w.run(60f)
         assertEquals(1, (6..9).count { w.farm.plot(Cell(it, 10))!!.tilled })
         assertTrue(w.queue.isEmpty())
+    }
+
+    @Test
+    fun `sitting on a bench brings energy back and saving stores where the farmer stood`() {
+        val w = world()
+        w.state.energy = 50
+        w.tap(18.0f, 10.5f) // bench3 above the pond
+        w.run()
+        val seat = assertNotNull(w.player.seat, "the farmer sits down")
+        assertEquals("bench3", seat.id)
+        val stand = assertNotNull(w.player.standCell)
+        // 12 real seconds is 20 game minutes: 5 energy at 4 game minutes each.
+        repeat(360) { w.update(1 / 30f, clockRunning = true) }
+        assertEquals(55, w.state.energy)
+        w.storePosition()
+        assertEquals(stand.x + 0.5f, w.state.playerX)
+        w.tap(10.5f, 16.5f)
+        w.run()
+        assertNull(w.player.seat, "walking away stands up")
+        assertTrue(w.location.walkable(w.player.cell))
+    }
+
+    @Test
+    fun `the fountain takes wishes and the shelf shows keepsakes`() {
+        val w = world()
+        w.enter(Locations.MARKET, "farm_road")
+        w.tap(5.0f, 12.5f)
+        w.run()
+        assertTrue(w.drain().contains(WorldEvent.Open(Panel.WISH)))
+        w.enter(Locations.HOUSE, "door")
+        w.tap(4.5f, 12.5f)
+        w.run()
+        assertTrue(w.drain().contains(WorldEvent.Open(Panel.SHELF)))
+    }
+
+    @Test
+    fun `tapping today's sparkle picks up a keepsake`() {
+        val w = world()
+        val day = (1..60).first { d -> w.state.day = d; w.sparkleCell() != null }
+        val cell = assertNotNull(w.sparkleCell())
+        w.tap(cell.x + 0.5f, cell.y + 0.5f)
+        assertTrue(w.queue.single() is Task.Pick)
+        w.run(60f)
+        assertEquals(day, w.state.leisure.sparkleTakenDay)
+        assertEquals(1, w.state.leisure.keepsakes.size)
+        assertNull(w.sparkleCell(), "found for today")
+    }
+
+    @Test
+    fun `the well answers when it is called five times`() {
+        val w = world()
+        w.tap(3.5f, 11.5f)
+        w.run() // the can is already full
+        w.drain()
+        repeat(4) {
+            w.tap(3.5f, 11.5f)
+            w.run()
+        }
+        assertTrue(w.drain().any { it is WorldEvent.Toast && it.msg.key == "easter.echo" })
     }
 
     @Test

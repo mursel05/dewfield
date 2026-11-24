@@ -53,6 +53,12 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
     private var sprayAcc = 0f
     private var twinkleAcc = 0f
     private var rippleAcc = 0f
+    private var sparkleAcc = 0f
+
+    /** Water cells of the map, for ripples, and the top of the fountain's spout, for its spray. */
+    private val waterCells = ArrayList<Cell>()
+    private var spoutX = Float.NaN
+    private var spoutY = Float.NaN
 
     /** Centre of each field block (x, y pairs), for the "for sale" signs on locked ones. */
     private var blockCentres = FloatArray(0)
@@ -109,6 +115,12 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
         for (y in 0 until height) for (x in 0 until width) buildProp(loc, x, y)
         for (o in loc.objects) buildObject(o)
         buildLights(loc)
+        waterCells.clear()
+        for (y in 0 until height) for (x in 0 until width) if (loc.terrain(x, y) == Terrain.WATER) waterCells += Cell(x, y)
+        // The spout sits 3.4 tiles above the fountain's footprint, in the middle (see obj/fountain).
+        val fountain = loc.objects.firstOrNull { it.kind == ObjKind.FOUNTAIN }
+        spoutX = fountain?.centerX ?: Float.NaN
+        spoutY = fountain?.let { it.y + 3.4f } ?: Float.NaN
         blockCentres = FloatArray(loc.fieldBlocks.size * 2)
         loc.fieldBlocks.forEachIndexed { i, block ->
             if (block.isEmpty()) return@forEachIndexed
@@ -197,6 +209,7 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
                 "window" -> decals += sized("obj/window", o, 0f)
                 else -> statics += sized("obj/${o.arg}", o)
             }
+            ObjKind.FOUNTAIN, ObjKind.BENCH, ObjKind.SHELF -> statics += sized("obj/${o.arg}", o)
             ObjKind.EXIT -> if (location.indoor) decals += Spr().set(assets.region("obj/doormat"), o.x.toFloat(), o.y.toFloat(), 1f, 1f, 0f)
             // Troughs, machines and the mill sails change, so they are drawn per frame.
             ObjKind.DOOR, ObjKind.TROUGH, ObjKind.MACHINE -> Unit
@@ -257,19 +270,27 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
                 val ripe = state.plots.filter { farm.isRipe(it) && it.x + 1 >= viewL && it.x <= viewR && it.y + 1 >= viewB && it.y <= viewT }
                 if (ripe.isNotEmpty()) ripe.random().let { effects.twinkle(it.x + MathUtils.random(0.2f, 0.8f), it.y + MathUtils.random(0.5f, 1.1f)) }
             }
+        }
+        if (waterCells.isNotEmpty()) {
             rippleAcc += dt
             if (rippleAcc > 0.7f) {
                 rippleAcc = 0f
-                val x = MathUtils.random(3, 9)
-                val y = MathUtils.random(3, 8)
-                if (location.terrain(x, y) == Terrain.WATER) effects.waterRipple(x + MathUtils.random(), y + MathUtils.random())
+                val c = waterCells.random()
+                if (c.x + 1 >= viewL && c.x <= viewR && c.y + 1 >= viewB && c.y <= viewT) effects.waterRipple(c.x + MathUtils.random(), c.y + MathUtils.random())
             }
         }
-        if (location.id == Locations.MARKET) {
+        if (!spoutX.isNaN()) {
             sprayAcc += dt
             while (sprayAcc > 0.04f) {
                 sprayAcc -= 0.04f
-                effects.fountainSpray(15f, 10.4f)
+                effects.fountainSpray(spoutX, spoutY)
+            }
+        }
+        world.sparkleCell()?.let { c ->
+            sparkleAcc += dt
+            if (sparkleAcc > 0.3f) {
+                sparkleAcc = 0f
+                effects.twinkle(c.x + MathUtils.random(0.2f, 0.8f), c.y + MathUtils.random(0.2f, 0.8f))
             }
         }
         effects.ambient(dt, viewL, viewB, viewR, viewT, state.weather == Weather.RAIN, night(), !location.indoor, time)
@@ -343,6 +364,13 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
                 batch.setColor(1f, 1f, 1f, 0.85f)
                 batch.draw(marker, dx - s / 2f, dy - s * 0.3f, s, s * 0.6f)
             }
+        }
+        // Today's sparkle: a slowly turning glint on the ground.
+        world.sparkleCell()?.let { c ->
+            val glint = assets.region("fx/sparkle")
+            val s = 0.55f + 0.12f * pulse
+            batch.setColor(1f, 0.97f, 0.75f, 0.75f + 0.25f * pulse)
+            batch.draw(glint, c.x + 0.5f - s / 2f, c.y + 0.45f - s / 2f, s / 2f, s / 2f, s, s, 1f, 1f, time * 40f)
         }
         // Exits glow softly so the way out is easy to find.
         for (o in location.objects) if (o.kind == ObjKind.EXIT) {
@@ -466,6 +494,13 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
 
     private fun addPlayer() {
         val p = world.player
+        p.seat?.let { bench ->
+            // The seat plank is 0.56 tiles up the bench sprite; the sitting farmer's hips are 0.3 up theirs.
+            val reg = assets.region("char/farmer_sit")
+            val h = reg.regionHeight / TILE
+            frame += pool.obtain().set(reg, p.x - 0.5f, bench.y + SEAT_LIFT, 1f, h, bench.y - 0.01f)
+            return
+        }
         val acting = p.actTime > 0f
         val dir = when (p.facing) {
             Facing.DOWN -> "down"
@@ -596,12 +631,21 @@ class WorldRenderer(private val assets: Assets, private val world: World) {
             batch.setColor(1f, 0.85f, 0.6f, n * 0.9f)
             batch.draw(light, p.x - 1.8f, p.y - 1.4f, 3.6f, 3.6f)
         }
+        world.sparkleCell()?.let { c ->
+            if (n > 0.05f) {
+                batch.setColor(1f, 0.95f, 0.6f, n * 0.7f)
+                batch.draw(light, c.x - 0.6f, c.y - 0.6f, 2.2f, 2.2f)
+            }
+        }
         effects.drawLights(batch)
         batch.packedColor = Spr.WHITE
     }
 
     companion object {
         const val TILE = 128f
+
+        /** How far above the bench's footprint the sitting farmer sprite starts. */
+        private const val SEAT_LIFT = 0.24f
         private const val NIGHT = 0
         private const val TV = 1
         private const val DAY = 2

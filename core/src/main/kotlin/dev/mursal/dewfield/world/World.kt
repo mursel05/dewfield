@@ -12,7 +12,7 @@ import kotlin.math.floor
 import kotlin.math.hypot
 import kotlin.random.Random
 
-enum class Panel { SHOP_SEEDS, SHOP_FEED, SELL, WORKSHOP, ORDERS, MACHINE, COOK, TV, SLEEP }
+enum class Panel { SHOP_SEEDS, SHOP_FEED, SELL, WORKSHOP, ORDERS, MACHINE, COOK, TV, SLEEP, WISH, SHELF }
 
 /** Things the world asks the screen to show or do. The screen drains [World.events] every frame. */
 sealed interface WorldEvent {
@@ -35,6 +35,9 @@ sealed interface Task {
     data class Plot(val cell: Cell) : Task
     data class Use(val obj: WorldObject) : Task
     data class Pet(val animalId: Int) : Task
+
+    /** Walk to today's sparkle on the ground and pick it up. */
+    data class Pick(val cell: Cell) : Task
 }
 
 class Player {
@@ -48,6 +51,10 @@ class Player {
     var actTime = 0f
     var actTool = ""
     val path = ArrayDeque<Pair<Float, Float>>()
+
+    /** The bench the farmer sits on, or null. [standCell] is where they get up to. */
+    var seat: WorldObject? = null
+    var standCell: Cell? = null
 
     val cell: Cell get() = Cell(floor(x).toInt(), floor(y).toInt())
 
@@ -103,6 +110,16 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
     private var arrived = false
     private var waterRetry: Cell? = null
 
+    /** Seconds since the world started, for timing quick repeated taps. */
+    private var time = 0f
+    private var restMinutes = 0.0
+    private var restNotice = false
+    private var sunsetNotice = false
+    private var wellTaps = 0
+    private var wellTapTime = -10f
+    private var sparkleKey = ""
+    private var sparkleCache: Cell? = null
+
     val state get() = farm.state
 
     // ------------------------------------------------------------------ locations
@@ -127,14 +144,30 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
         }
         player.moving = false
         player.actTime = 0f
+        player.seat = null
+        player.standCell = null
         spawnAnimals()
     }
 
-    /** Stores the farmer's position in the save state. */
+    /** Stores the farmer's position in the save state (where they stood up from, if seated). */
     fun storePosition() {
-        state.playerX = player.x
-        state.playerY = player.y
+        val stand = player.standCell
+        state.playerX = if (player.seat != null && stand != null) stand.x + 0.5f else player.x
+        state.playerY = if (player.seat != null && stand != null) stand.y + 0.5f else player.y
         state.facing = player.facing.ordinal
+    }
+
+    // ------------------------------------------------------------------ sparkles
+
+    /** Today's sparkle in this location, or null. Cached until the day, the area or the find changes. */
+    fun sparkleCell(): Cell? {
+        val key = "${location.id}/${state.day}/${state.leisure.sparkleTakenDay}"
+        if (key != sparkleKey) {
+            sparkleKey = key
+            sparkleCache = farm.leisure.sparkleIndex(Locations.SPARKLES.size)
+                ?.let { Locations.SPARKLES[it] }?.takeIf { it.first == location.id }?.second
+        }
+        return sparkleCache
     }
 
     private fun spawnAnimals() {
@@ -190,6 +223,12 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
         animalAt(wx, wy)?.let { a ->
             replaceWith(Task.Pet(a.id))
             return
+        }
+        sparkleCell()?.let { c ->
+            if (hypot(c.x + 0.5f - wx, c.y + 0.5f - wy) < SPARKLE_RADIUS) {
+                replaceWith(Task.Pick(c))
+                return
+            }
         }
         location.objectHit(wx, wy)?.let { o ->
             replaceWith(Task.Use(o))
@@ -268,7 +307,9 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
 
     /** Advances the world. [clockRunning] is false while a panel is open or the screen fades. */
     fun update(dt: Float, clockRunning: Boolean) {
+        time += dt
         if (clockRunning) farm.advanceTime(dt.toDouble())
+        if (clockRunning && player.seat != null) rest(dt)
         updateAnimals(dt)
         if (player.actTime > 0f) {
             player.actTime -= dt
@@ -291,6 +332,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
             n4.ifEmpty { listOf(task.cell) }
         }
         is Task.Use -> location.standCellsFor(task.obj)
+        is Task.Pick -> listOf(task.cell)
         is Task.Pet -> {
             val a = animals.firstOrNull { it.id == task.animalId }
             if (a == null) emptyList() else {
@@ -302,6 +344,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
     }
 
     private fun start(task: Task) {
+        if (player.seat != null) standUp()
         current = task
         arrived = false
         if (task is Task.Pet) animals.firstOrNull { it.id == task.animalId }?.held = true
@@ -375,6 +418,7 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
                     petOrInspect(a)
                 }
             }
+            is Task.Pick -> pickSparkle(t.cell)
             null -> Unit
         }
         finishTask()
@@ -494,7 +538,8 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
                     events += WorldEvent.Fx("water", o.centerX, o.y + 0.3f)
                     events += WorldEvent.Float(farmX, farmY, Gain("water", state.canWater))
                     waterRetry = null
-                } else if (r is Outcome.Fail) toast(r.msg)
+                    wellTaps = 0
+                } else if (r is Outcome.Fail) wellFull(o, r.msg)
             }
             ObjKind.MILL, ObjKind.MACHINE -> {
                 if (farm.owns(o.arg)) events += WorldEvent.Open(Panel.MACHINE, o.arg)
@@ -532,7 +577,88 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
             ObjKind.WORKSHOP -> market(Panel.WORKSHOP)
             ObjKind.BOARD -> events += WorldEvent.Open(Panel.ORDERS, "board")
             ObjKind.SIGN -> toast(Msg(o.arg))
+            ObjKind.FOUNTAIN -> events += WorldEvent.Open(Panel.WISH)
+            ObjKind.BENCH -> sit(o)
+            ObjKind.SHELF -> events += WorldEvent.Open(Panel.SHELF)
             ObjKind.DECOR -> Unit
+        }
+    }
+
+    /** Calling into a full well a few times in a row gets an answer. */
+    private fun wellFull(o: WorldObject, msg: Msg) {
+        wellTaps = if (time - wellTapTime < ECHO_WINDOW) wellTaps + 1 else 1
+        wellTapTime = time
+        if (wellTaps < ECHO_TAPS) {
+            toast(msg)
+            return
+        }
+        wellTaps = 0
+        sound("chime")
+        toast(Msg("easter.echo"))
+        events += WorldEvent.Fx("sparkle", o.centerX, o.y + 0.6f)
+    }
+
+    // ------------------------------------------------------------------ benches
+
+    /** Sits on the half of the bench nearer to where the farmer stands, facing the view. */
+    private fun sit(o: WorldObject) {
+        player.standCell = player.cell
+        player.seat = o
+        player.x = if (player.x < o.centerX) o.x + 0.5f else o.x + o.w - 0.5f
+        player.y = o.y + 0.5f
+        player.facing = Facing.DOWN
+        restMinutes = 0.0
+        restNotice = false
+        sunsetNotice = false
+        sound("pop")
+        toast(Msg(if (farm.leisure.restLeft > 0) "rest.sit" else "rest.sit_done"))
+    }
+
+    private fun standUp() {
+        val c = player.standCell
+        player.seat = null
+        player.standCell = null
+        if (c != null) {
+            player.x = c.x + 0.5f
+            player.y = c.y + 0.5f
+        }
+    }
+
+    /** Energy comes back while the farmer sits, a point every few game minutes, up to the day's cap. */
+    private fun rest(dt: Float) {
+        if (!sunsetNotice && farm.leisure.isSunset() && farm.leisure.restLeft > 0) {
+            sunsetNotice = true
+            toast(Msg("rest.sunset"))
+        }
+        restMinutes += dt / Farm.SECONDS_PER_GAME_MINUTE
+        val per = farm.leisure.restMinutesPerEnergy()
+        while (restMinutes >= per) {
+            restMinutes -= per
+            when (val r = farm.leisure.restTick()) {
+                is Outcome.Ok -> r.gains.forEach { events += WorldEvent.Float(player.x, player.y + 1.3f, it) }
+                is Outcome.Fail -> {
+                    if (!restNotice) toast(r.msg)
+                    restNotice = true
+                    restMinutes = 0.0
+                    return
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------ sparkles
+
+    private fun pickSparkle(cell: Cell) {
+        if (sparkleCell() != cell) return
+        when (val r = farm.leisure.findSparkle()) {
+            is Outcome.Ok -> {
+                animate("hand")
+                sound("chime")
+                events += WorldEvent.Fx("sparkle", cell.x + 0.5f, cell.y + 0.3f)
+                r.msg?.let { toast(it) }
+                r.gains.forEach { events += WorldEvent.Float(cell.x + 0.5f, cell.y + 1.2f, it) }
+            }
+            is Outcome.Fail -> Unit
         }
     }
 
@@ -617,6 +743,11 @@ class World(val farm: Farm, private val rng: Random = Random(farm.state.seed xor
 
     companion object {
         const val MAX_QUEUE = 30
+
+        /** How close to a sparkle a tap must land (tiles), generous for fingers. */
+        const val SPARKLE_RADIUS = 0.9f
+        private const val ECHO_TAPS = 5
+        private const val ECHO_WINDOW = 1.6f
         fun hhmm(minutes: Int): String = "%02d:%02d".format(minutes / 60 % 24, minutes % 60)
     }
 }
